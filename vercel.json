@@ -1,16 +1,6 @@
 {
-    "version": 2,
-    "outputDirectory": "dist",
-    "builds": [
-        {
-            "src": "backend/dist/main.js",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "backend/dist/main.js"
-        }
-    ]
+    "buildCommand": "cd web && npm run build",
+    "outputDirectory": "web/.next",
+    "installCommand": "npm install --prefix web",
+    "framework": "nextjs"
 }
