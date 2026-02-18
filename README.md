@@ -19,17 +19,20 @@ This project is a monorepo managed by npm workspaces:
 ## Getting Started
 
 1.  **Install Dependencies**
+
     ```bash
     npm install
     ```
 
 2.  **Start Backend**
+
     ```bash
     cd backend
     npm run start:dev
     ```
 
 3.  **Start Web App**
+
     ```bash
     cd web
     npm run dev
@@ -43,11 +46,11 @@ This project is a monorepo managed by npm workspaces:
 
 ## Development
 
--   **Linting**: `npm run lint` (Runs ESLint across all workspaces)
--   **Formatting**: `npm run format` (Runs Prettier across all workspaces)
+- **Linting**: `npm run lint` (Runs ESLint across all workspaces)
+- **Formatting**: `npm run format` (Runs Prettier across all workspaces)
 
 ## Tech Stack
 
--   **Backend**: NestJS, PostgreSQL, Redis
--   **Web**: Next.js (App Router), Tailwind CSS
--   **Mobile**: React Native (Expo)
+- **Backend**: NestJS, PostgreSQL, Redis
+- **Web**: Next.js (App Router), Tailwind CSS
+- **Mobile**: React Native (Expo)

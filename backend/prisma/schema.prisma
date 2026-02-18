@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ItemCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  POOR
+}
+
+enum ExchangeStatus {
+  PROPOSED
+  ACCEPTED
+  IN_PROGRESS
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String?
+  googleId  String?  @unique
+  name      String?
+  phone     String?
+  city      String?
+  avatarUrl String?
+  rating    Float    @default(0)
+  status    String   @default("active")
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items            Item[]
+  sentExchanges    Exchange[] @relation("SentExchanges")
+  receivedExchanges Exchange[] @relation("ReceivedExchanges")
+  sentMessages     Message[]  @relation("SentMessages")
+  receivedMessages Message[]  @relation("ReceivedMessages")
+  notifications    Notification[]
+  ratingsGiven     Rating[]   @relation("RatingsGiven")
+  ratingsReceived  Rating[]   @relation("RatingsReceived")
+}
+
+model Item {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  condition   ItemCondition
+  category    String?
+  photos      Photo[]
+  isAvailable Boolean       @default(true)
+  gender      String?       // BOY, GIRL, UNISEX
+  age         String?       // "0-3", "4-7", etc
+  type        String?       // Toy, Clothing, Book, etc
+  wishlist    String?       // New field: what the user wants in return
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  offeredInExchanges Exchange[] @relation("ItemOffered")
+  requestedInExchanges Exchange[] @relation("ItemRequested")
+}
+
+model Exchange {
+  id        String         @id @default(uuid())
+  status    ExchangeStatus @default(PROPOSED)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  meetingDate         DateTime?
+  postOffice          String?
+  shippingNote        String?
+  initiatorCompleted  Boolean  @default(false)
+  receiverCompleted   Boolean  @default(false)
+  initiatorShippingConfirmed Boolean @default(false)
+  receiverShippingConfirmed  Boolean @default(false)
+
+  initiatorId String
+  initiator   User   @relation("SentExchanges", fields: [initiatorId], references: [id])
+
+  receiverId String
+  receiver   User   @relation("ReceivedExchanges", fields: [receiverId], references: [id])
+
+  itemOfferedId String?
+  itemOffered   Item?   @relation("ItemOffered", fields: [itemOfferedId], references: [id])
+
+  itemRequestedId String?
+  itemRequested   Item?   @relation("ItemRequested", fields: [itemRequestedId], references: [id])
+
+  messages Message[]
+  ratings  Rating[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  senderId String
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+
+  receiverId String
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  exchangeId String
+  exchange   Exchange @relation(fields: [exchangeId], references: [id])
+}
+
+model Photo {
+  id        String   @id @default(uuid())
+  url       String
+  createdAt DateTime @default(now())
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Rating {
+  id        String   @id @default(uuid())
+  score     Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  exchangeId String
+  exchange   Exchange @relation(fields: [exchangeId], references: [id])
+
+  fromUserId String
+  fromUser   User @relation("RatingsGiven", fields: [fromUserId], references: [id])
+
+  toUserId String
+  toUser   User @relation("RatingsReceived", fields: [toUserId], references: [id])
+
+  @@unique([exchangeId, fromUserId])
+}

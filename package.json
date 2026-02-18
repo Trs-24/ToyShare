@@ -1,1 +1,26 @@
-{"name":"toyshare-monorepo","private":true,"workspaces":["backend","web","mobile"],"scripts":{"lint":"eslint .","format":"prettier --write ."},"devDependencies":{"eslint":"^9.39.2","husky":"^9.1.7","lint-staged":"^16.2.7","prettier":"^3.8.1"}}
+{
+  "name": "toyshare-monorepo",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "web",
+    "mobile"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "8.57.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1"
+  }
+}
