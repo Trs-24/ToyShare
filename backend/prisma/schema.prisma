@@ -35,9 +35,17 @@ model User {
   password  String?
   googleId  String?  @unique
   name      String?
-  phone     String?
+  phone     String?  @unique
   city      String?
+  country   String?
+  defaultPostOffice String?
   avatarUrl String?
+  
+  // Telegram verification fields
+  isPhoneVerified Boolean @default(false)
+  telegramChatId  String? @unique
+  telegramUsername String?
+
   rating    Float    @default(0)
   status    String   @default("active")
   role      Role     @default(USER)

@@ -147,24 +147,49 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold text-gray-900">{t('dash_title')}</h1>
             <p className="text-gray-500 text-sm">{t('dash_subtitle')}</p>
           </div>
-          <button onClick={() => {
-            setShowForm(!showForm);
-            setEditingId(null);
-            setForm({
-              title: '',
-              description: '',
-              condition: 'GOOD',
-              category: '',
-              gender: '',
-              age: '',
-              type: '',
-              wishlist: '',
-              photos: [],
-            });
-          }} className="btn-primary">
+          <button
+            onClick={() => {
+              setShowForm(!showForm);
+              setEditingId(null);
+              setForm({
+                title: '',
+                description: '',
+                condition: 'GOOD',
+                category: '',
+                gender: '',
+                age: '',
+                type: '',
+                wishlist: '',
+                photos: [],
+              });
+            }}
+            className="btn-primary"
+          >
             {showForm ? t('dash_cancelBtn') : t('dash_addBtn')}
           </button>
         </div>
+
+        {user && !user.isPhoneVerified && (
+          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-amber-800 font-medium">
+                ⚠️ {t('dash_verifyPhoneTitle') || 'Необходимо подтвердить телефон'}
+              </h3>
+              <p className="text-amber-700 text-sm mt-1">
+                {t('dash_verifyPhoneDesc') ||
+                  'Для участия в обменах подтвердите свой номер телефона через нашего Telegram-бота.'}
+              </p>
+            </div>
+            <a
+              href="https://t.me/ToyShareVerification_bot?start=verify"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+            >
+              🤖 {t('dash_verifyPhoneBtn') || 'Подтвердить в Telegram'}
+            </a>
+          </div>
+        )}
 
         {showForm && (
           <form onSubmit={handleCreate} className="card p-6 mb-6 space-y-4">
@@ -185,64 +210,84 @@ export default function DashboardPage() {
             />
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t('dash_conditionLabel')}</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  {t('dash_conditionLabel')}
+                </label>
                 <select
                   className="input-field"
                   value={form.condition}
                   onChange={(e) => setForm({ ...form, condition: e.target.value })}
                 >
                   {conditionOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t('dash_categoryLabel')}</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  {t('dash_categoryLabel')}
+                </label>
                 <select
                   className="input-field"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                 >
                   {categoryOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t('dash_genderLabel')}</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  {t('dash_genderLabel')}
+                </label>
                 <select
                   className="input-field"
                   value={form.gender}
                   onChange={(e) => setForm({ ...form, gender: e.target.value })}
                 >
                   {genderOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t('dash_ageLabel')}</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  {t('dash_ageLabel')}
+                </label>
                 <select
                   className="input-field"
                   value={form.age}
                   onChange={(e) => setForm({ ...form, age: e.target.value })}
                 >
                   {ageOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t('dash_typeLabel')}</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  {t('dash_typeLabel')}
+                </label>
                 <select
                   className="input-field"
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                 >
                   {typeOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -255,25 +300,45 @@ export default function DashboardPage() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('dash_photos')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t('dash_photos')}
+              </label>
               <div className="flex flex-wrap gap-4 mb-4">
                 {form.photos.map((url, index) => (
                   <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden group">
-                    <img src={getMediaUrl(url)} alt="Preview" className="w-full h-full object-cover" />
+                    <img
+                      src={getMediaUrl(url)}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
                     <button
                       type="button"
                       onClick={() => removePhoto(index)}
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </button>
                   </div>
                 ))}
                 <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500 transition">
                   <span className="text-2xl text-gray-400">+</span>
-                  <input type="file" className="hidden" accept="image/*" onChange={handlePhotoUpload} />
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                  />
                 </label>
               </div>
             </div>
@@ -312,23 +377,45 @@ export default function DashboardPage() {
                   <h3 className="font-semibold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-1">{item.description}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="badge bg-indigo-50 text-indigo-700">{getConditionLabel(t, item.condition)}</span>
-                    {item.category && <span className="badge bg-blue-50 text-blue-700">{item.category}</span>}
-                    {item.age && <span className="badge bg-amber-50 text-amber-700">{getAgeLabel(t, item.age)}</span>}
-                    {item.type && <span className="badge bg-teal-50 text-teal-700">{getTypeLabel(t, item.type)}</span>}
+                    <span className="badge bg-indigo-50 text-indigo-700">
+                      {getConditionLabel(t, item.condition)}
+                    </span>
+                    {item.category && (
+                      <span className="badge bg-blue-50 text-blue-700">{item.category}</span>
+                    )}
+                    {item.age && (
+                      <span className="badge bg-amber-50 text-amber-700">
+                        {getAgeLabel(t, item.age)}
+                      </span>
+                    )}
+                    {item.type && (
+                      <span className="badge bg-teal-50 text-teal-700">
+                        {getTypeLabel(t, item.type)}
+                      </span>
+                    )}
                     {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) ? (
-                      <span className="badge bg-purple-100 text-purple-700">{t('dash_inExchange')}</span>
+                      <span className="badge bg-purple-100 text-purple-700">
+                        {t('dash_inExchange')}
+                      </span>
                     ) : item.isAvailable ? (
-                      <span className="badge bg-green-50 text-green-700">{t('dash_available')}</span>
+                      <span className="badge bg-green-50 text-green-700">
+                        {t('dash_available')}
+                      </span>
                     ) : (
                       <span className="badge bg-gray-100 text-gray-500">{t('dash_hidden')}</span>
                     )}
                   </div>
                   <div className="flex gap-2 mt-4">
-                    <button onClick={() => handleEdit(item)} className="text-sm text-indigo-600 hover:text-indigo-800">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="text-sm text-indigo-600 hover:text-indigo-800"
+                    >
                       {t('dash_editItem')}
                     </button>
-                    <button onClick={() => handleDelete(item.id)} className="text-sm text-red-500 hover:text-red-700">
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="text-sm text-red-500 hover:text-red-700"
+                    >
                       {t('dash_deleteItem')}
                     </button>
                   </div>

@@ -24,10 +24,18 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       }),
-    register: (email: string, password: string, name: string) =>
+    register: (data: {
+      email: string;
+      password?: string;
+      name: string;
+      phone: string;
+      city?: string;
+      country?: string;
+      defaultPostOffice?: string;
+    }) =>
       request('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify(data),
       }),
     googleLoginUrl: () => `${API_BASE}/auth/google`,
   },
@@ -38,7 +46,8 @@ export const api = {
     },
     get: (id: string) => request(`/items/${id}`),
     create: (data: any) => request('/items', { method: 'POST', body: JSON.stringify(data) }),
-    update: (id: string, data: any) => request(`/items/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    update: (id: string, data: any) =>
+      request(`/items/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     delete: (id: string) => request(`/items/${id}`, { method: 'DELETE' }),
     uploadPhoto: (file: File) => {
       const formData = new FormData();
@@ -65,7 +74,10 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ status }),
       }),
-    updateShipping: (id: string, data: { meetingDate?: string; postOffice?: string; shippingNote?: string }) =>
+    updateShipping: (
+      id: string,
+      data: { meetingDate?: string; postOffice?: string; shippingNote?: string },
+    ) =>
       request(`/exchanges/${id}/shipping`, {
         method: 'PATCH',
         body: JSON.stringify(data),
@@ -74,7 +86,8 @@ export const api = {
     createRating: (id: string, data: { score: number; comment?: string }) =>
       request(`/exchanges/${id}/rating`, { method: 'POST', body: JSON.stringify(data) }),
     getRatings: (id: string) => request(`/exchanges/${id}/rating`),
-    confirmShipping: (id: string) => request(`/exchanges/${id}/confirm-shipping`, { method: 'PATCH' }),
+    confirmShipping: (id: string) =>
+      request(`/exchanges/${id}/confirm-shipping`, { method: 'PATCH' }),
   },
   messages: {
     listByExchange: (exchangeId: string) => request(`/messages/exchange/${exchangeId}`),
@@ -88,14 +101,15 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ content }),
       }),
-    delete: (id: string) =>
-      request(`/messages/${id}`, { method: 'DELETE' }),
+    delete: (id: string) => request(`/messages/${id}`, { method: 'DELETE' }),
   },
   users: {
     getProfile: () => request('/users/profile'),
-    updateProfile: (data: any) => request('/users/profile', {
-      method: 'PATCH', body: JSON.stringify(data)
-    }),
+    updateProfile: (data: any) =>
+      request('/users/profile', {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
     uploadAvatar: (file: File) => {
       const formData = new FormData();
       formData.append('avatar', file);
@@ -126,8 +140,7 @@ export const api = {
     },
     updateItem: (id: string, data: any) =>
       request(`/admin/items/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
-    deleteItem: (id: string) =>
-      request(`/admin/items/${id}`, { method: 'DELETE' }),
+    deleteItem: (id: string) => request(`/admin/items/${id}`, { method: 'DELETE' }),
     getExchanges: () => request('/admin/exchanges'),
   },
   notifications: {

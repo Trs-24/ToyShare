@@ -7,7 +7,15 @@ interface AuthContextType {
   user: any;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (data: {
+    email: string;
+    password?: string;
+    name: string;
+    phone: string;
+    city?: string;
+    country?: string;
+    defaultPostOffice?: string;
+  }) => Promise<void>;
   loginWithToken: (token: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
@@ -50,9 +58,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(profile);
   };
 
-  const register = async (email: string, password: string, name: string) => {
-    await api.auth.register(email, password, name);
-    await login(email, password);
+  const register = async (data: {
+    email: string;
+    password?: string;
+    name: string;
+    phone: string;
+    city?: string;
+    country?: string;
+    defaultPostOffice?: string;
+  }) => {
+    await api.auth.register(data);
+    if (data.password) {
+      await login(data.email, data.password);
+    }
   };
 
   const loginWithToken = useCallback(async (newToken: string) => {
@@ -70,7 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, loginWithToken, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, token, login, register, loginWithToken, logout, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );
