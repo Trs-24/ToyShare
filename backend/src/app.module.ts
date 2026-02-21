@@ -9,7 +9,8 @@ import { MessagesModule } from './messages/messages.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AdminModule } from './admin/admin.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { TelegramModule } from './telegram/telegram.module';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { TelegramModule } from './telegram/telegram.module';
     NotificationsModule,
     AdminModule,
     CloudinaryModule,
-    TelegramModule,
+    EmailModule,
+    ScheduleModule.forRoot(),
   ],
 })
 export class AppModule {}

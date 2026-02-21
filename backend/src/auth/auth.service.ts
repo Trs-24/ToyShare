@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from '../email/email.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -29,7 +34,7 @@ export class AuthService {
       username: user.email,
       sub: user.id,
       role: user.role,
-      isPhoneVerified: user.isPhoneVerified,
+      isEmailVerified: user.isEmailVerified,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -38,13 +43,44 @@ export class AuthService {
 
   async register(user: any) {
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    const created = await this.usersService.create({
-      ...user,
-      password: hashedPassword,
+    const emailVerifyToken = crypto.randomUUID();
+
+    try {
+      const created = await this.usersService.create({
+        ...user,
+        password: hashedPassword,
+        emailVerifyToken,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _, ...result } = created;
+
+      // Send verification email (async, don't block registration)
+      this.emailService.sendVerificationEmail(created.email, emailVerifyToken);
+
+      return result;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException(
+          'Account with this email or phone already exists.',
+        );
+      }
+      throw error;
+    }
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.usersService.findByEmailToken(token);
+    if (!user) {
+      throw new BadRequestException('Invalid or expired verification token.');
+    }
+    await this.usersService.update(user.id, {
+      isEmailVerified: true,
+      emailVerifyToken: null,
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...result } = created;
-    return result;
+    return { message: 'Email verified successfully.' };
   }
 
   async validateGoogleUser(googleProfile: {
@@ -73,12 +109,13 @@ export class AuthService {
       return result;
     }
 
-    // 3. Create a new user (no password)
+    // 3. Create a new user (no password, auto-verified via Google)
     const newUser = await this.usersService.create({
       email: googleProfile.email,
       name: googleProfile.name,
       googleId: googleProfile.googleId,
       avatarUrl: googleProfile.avatarUrl,
+      isEmailVerified: true, // Google OAuth users are auto-verified
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...result } = newUser;

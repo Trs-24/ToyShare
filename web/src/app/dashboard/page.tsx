@@ -169,25 +169,12 @@ export default function DashboardPage() {
           </button>
         </div>
 
-        {user && !user.isPhoneVerified && (
+        {user && !user.isEmailVerified && (
           <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-amber-800 font-medium">
-                ⚠️ {t('dash_verifyPhoneTitle') || 'Необходимо подтвердить телефон'}
-              </h3>
-              <p className="text-amber-700 text-sm mt-1">
-                {t('dash_verifyPhoneDesc') ||
-                  'Для участия в обменах подтвердите свой номер телефона через нашего Telegram-бота.'}
-              </p>
+              <h3 className="text-amber-800 font-medium">⚠️ {t('dash_verifyEmailTitle')}</h3>
+              <p className="text-amber-700 text-sm mt-1">{t('dash_verifyEmailDesc')}</p>
             </div>
-            <a
-              href="https://t.me/ToyShareVerification_bot?start=verify"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
-            >
-              🤖 {t('dash_verifyPhoneBtn') || 'Подтвердить в Telegram'}
-            </a>
           </div>
         )}
 

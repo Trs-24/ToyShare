@@ -76,6 +76,8 @@ const ru: Record<TranslationKeys, string> = {
   profile_updated: 'Профиль обновлён!',
   profile_updateError: 'Ошибка обновления профиля',
   profile_photoError: 'Ошибка загрузки фото',
+  profile_emailNotifications: 'Email уведомления',
+  profile_emailNotificationsDesc: 'Получать письма о новых обменах и сообщениях',
 
   // === Catalog ===
   catalog_title: 'Каталог',
@@ -124,10 +126,9 @@ const ru: Record<TranslationKeys, string> = {
   dash_inExchange: '🔄 В процессе обмена',
   dash_available: 'Доступно',
   dash_hidden: 'Скрыто',
-  dash_verifyPhoneTitle: 'Необходимо подтвердить телефон',
-  dash_verifyPhoneDesc:
-    'Для участия в обменах подтвердите свой номер телефона через нашего Telegram-бота.',
-  dash_verifyPhoneBtn: 'Подтвердить в Telegram',
+  dash_verifyEmailTitle: 'Подтвердите вашу почту',
+  dash_verifyEmailDesc:
+    'Мы отправили письмо на вашу почту. Пожалуйста, перейдите по ссылке в письме, чтобы подтвердить аккаунт.',
 
   // === Item Detail ===
   item_notFound: 'Товар не найден',

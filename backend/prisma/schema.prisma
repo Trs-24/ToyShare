@@ -41,10 +41,10 @@ model User {
   defaultPostOffice String?
   avatarUrl String?
   
-  // Telegram verification fields
-  isPhoneVerified Boolean @default(false)
-  telegramChatId  String? @unique
-  telegramUsername String?
+  // Email verification fields
+  isEmailVerified    Boolean @default(false)
+  emailVerifyToken   String? @unique
+  emailNotifications Boolean @default(true)
 
   rating    Float    @default(0)
   status    String   @default("active")

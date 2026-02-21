@@ -74,6 +74,8 @@ const uk = {
   profile_updated: 'Профіль оновлено!',
   profile_updateError: 'Помилка оновлення профілю',
   profile_photoError: 'Помилка завантаження фото',
+  profile_emailNotifications: 'Email сповіщення',
+  profile_emailNotificationsDesc: 'Отримувати листи про нові обміни та повідомлення',
 
   // === Catalog ===
   catalog_title: 'Каталог',
@@ -122,10 +124,9 @@ const uk = {
   dash_inExchange: '🔄 В процесі обміну',
   dash_available: 'Доступно',
   dash_hidden: 'Сховано',
-  dash_verifyPhoneTitle: 'Необхідно підтвердити телефон',
-  dash_verifyPhoneDesc:
-    'Для участі в обмінах підтвердіть свій номер телефону через нашого Telegram-бота.',
-  dash_verifyPhoneBtn: 'Підтвердити в Telegram',
+  dash_verifyEmailTitle: 'Підтвердіть вашу пошту',
+  dash_verifyEmailDesc:
+    'Ми надіслали лист на вашу пошту. Будь ласка, перейдіть за посиланням у листі, щоб підтвердити акаунт.',
 
   // === Item Detail ===
   item_notFound: 'Товар не знайдено',

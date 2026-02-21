@@ -1,4 +1,13 @@
-import { Controller, Request, Post, Get, UseGuards, Body, Res } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Post,
+  Get,
+  UseGuards,
+  Body,
+  Res,
+  Query,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -11,7 +20,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -24,6 +33,11 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
 
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
+  }
+
   @UseGuards(GoogleAuthGuard)
   @Get('google')
   async googleAuth() {
@@ -34,7 +48,8 @@ export class AuthController {
   @Get('google/callback')
   async googleAuthCallback(@Request() req, @Res() res: Response) {
     const { access_token } = await this.authService.login(req.user);
-    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3001';
+    const frontendUrl =
+      this.configService.get('FRONTEND_URL') || 'http://localhost:3001';
     res.redirect(`${frontendUrl}/auth/google/callback?token=${access_token}`);
   }
 }

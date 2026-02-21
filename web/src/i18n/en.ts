@@ -74,8 +74,10 @@ const en: Record<TranslationKeys, string> = {
   profile_saveBtn: 'Save',
   profile_cancelBtn: 'Cancel',
   profile_updated: 'Profile updated!',
-  profile_updateError: 'Failed to update profile',
-  profile_photoError: 'Failed to upload photo',
+  profile_updateError: 'Error updating profile',
+  profile_photoError: 'Error uploading photo',
+  profile_emailNotifications: 'Email notifications',
+  profile_emailNotificationsDesc: 'Receive emails about new exchanges and messages',
 
   // === Catalog ===
   catalog_title: 'Catalog',
@@ -124,10 +126,9 @@ const en: Record<TranslationKeys, string> = {
   dash_inExchange: '🔄 In exchange',
   dash_available: 'Available',
   dash_hidden: 'Hidden',
-  dash_verifyPhoneTitle: 'Phone verification required',
-  dash_verifyPhoneDesc:
-    'To participate in exchanges, please verify your phone number via our Telegram bot.',
-  dash_verifyPhoneBtn: 'Verify via Telegram',
+  dash_verifyEmailTitle: 'Verify your email',
+  dash_verifyEmailDesc:
+    'We sent an email to your address. Please click the link in the email to verify your account.',
 
   // === Item Detail ===
   item_notFound: 'Item not found',

@@ -37,6 +37,7 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    verifyEmail: (token: string) => request(`/auth/verify-email?token=${token}`),
     googleLoginUrl: () => `${API_BASE}/auth/google`,
   },
   items: {

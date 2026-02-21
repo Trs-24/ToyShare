@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { Exchange } from '@prisma/client';
+import { EmailService } from '../email/email.service';
 import { CreateExchangeDto } from './dto/create-exchange.dto';
 import { UpdateExchangeDto } from './dto/update-exchange.dto';
 import { UpdateShippingDto } from './dto/update-shipping.dto';
@@ -17,7 +17,8 @@ export class ExchangesService {
   constructor(
     private prisma: PrismaService,
     private notificationsService: NotificationsService,
-  ) { }
+    private emailService: EmailService,
+  ) {}
 
   async create(userId: string, dto: CreateExchangeDto) {
     const requestedItem = await this.prisma.item.findUnique({
@@ -37,7 +38,9 @@ export class ExchangesService {
       },
     });
     if (activeExchangeForRequested) {
-      throw new BadRequestException('This item is already in an active exchange');
+      throw new BadRequestException(
+        'This item is already in an active exchange',
+      );
     }
 
     // Check if offered item is already in an active exchange
@@ -52,7 +55,9 @@ export class ExchangesService {
         },
       });
       if (activeExchangeForOffered) {
-        throw new BadRequestException('Your item is already in an active exchange');
+        throw new BadRequestException(
+          'Your item is already in an active exchange',
+        );
       }
     }
 
@@ -77,6 +82,15 @@ export class ExchangesService {
       `${exchange.initiator.name} Proposed an exchange for ${requestedItem.title}`,
     );
 
+    // Send email notification if user opted in
+    if ((requestedItem.owner as any).emailNotifications) {
+      this.emailService.sendExchangeNotification(
+        requestedItem.owner.email,
+        'Нова пропозиція обміну',
+        `${exchange.initiator.name} запропонував обмін на ваш товар "${requestedItem.title}".`,
+      );
+    }
+
     return exchange;
   }
 
@@ -92,8 +106,12 @@ export class ExchangesService {
       include: {
         itemOffered: { include: { photos: true } },
         itemRequested: { include: { photos: true } },
-        initiator: { select: { id: true, name: true, avatarUrl: true, rating: true } },
-        receiver: { select: { id: true, name: true, avatarUrl: true, rating: true } },
+        initiator: {
+          select: { id: true, name: true, avatarUrl: true, rating: true },
+        },
+        receiver: {
+          select: { id: true, name: true, avatarUrl: true, rating: true },
+        },
         ratings: {
           include: {
             fromUser: { select: { id: true, name: true } },
@@ -146,8 +164,14 @@ export class ExchangesService {
     if (!exchange) throw new NotFoundException('Exchange not found');
 
     // If userId is provided, verify the user is a participant
-    if (userId && exchange.initiatorId !== userId && exchange.receiverId !== userId) {
-      throw new ForbiddenException('You are not a participant of this exchange');
+    if (
+      userId &&
+      exchange.initiatorId !== userId &&
+      exchange.receiverId !== userId
+    ) {
+      throw new ForbiddenException(
+        'You are not a participant of this exchange',
+      );
     }
 
     return exchange;
@@ -159,7 +183,7 @@ export class ExchangesService {
    * - Completing an exchange (requires both parties to confirm shipping and completion)
    * - Cancelling/Rejecting proposals
    * - Updating status during the normal flow (PROPOSED -> ACCEPTED -> IN_PROGRESS)
-   * 
+   *
    * @param id Exchange ID
    * @param userId ID of the user performing the action
    * @param dto New status
@@ -317,10 +341,14 @@ export class ExchangesService {
     const isInitiator = exchange.initiatorId === userId;
     const exShipping = exchange as any;
     if (isInitiator && exShipping.initiatorShippingConfirmed) {
-      throw new BadRequestException('You have already confirmed shipping details. Editing is no longer possible.');
+      throw new BadRequestException(
+        'You have already confirmed shipping details. Editing is no longer possible.',
+      );
     }
     if (!isInitiator && exShipping.receiverShippingConfirmed) {
-      throw new BadRequestException('You have already confirmed shipping details. Editing is no longer possible.');
+      throw new BadRequestException(
+        'You have already confirmed shipping details. Editing is no longer possible.',
+      );
     }
 
     const status = exchange.status as string;
@@ -374,26 +402,36 @@ export class ExchangesService {
     const exchange = await this.findOne(id);
 
     if (exchange.initiatorId !== userId && exchange.receiverId !== userId) {
-      throw new ForbiddenException('Only exchange participants can confirm shipping');
+      throw new ForbiddenException(
+        'Only exchange participants can confirm shipping',
+      );
     }
 
     const status = exchange.status as string;
     if (status !== 'ACCEPTED' && status !== 'IN_PROGRESS') {
-      throw new BadRequestException('Shipping can only be confirmed for accepted or in-progress exchanges');
+      throw new BadRequestException(
+        'Shipping can only be confirmed for accepted or in-progress exchanges',
+      );
     }
 
     // Require at least some shipping data
     if (!exchange.meetingDate && !exchange.postOffice) {
-      throw new BadRequestException('Please specify a meeting date or post office before confirming');
+      throw new BadRequestException(
+        'Please specify a meeting date or post office before confirming',
+      );
     }
 
     const isInitiator = exchange.initiatorId === userId;
     const exConfirm = exchange as any;
     if (isInitiator && exConfirm.initiatorShippingConfirmed) {
-      throw new BadRequestException('You have already confirmed shipping details');
+      throw new BadRequestException(
+        'You have already confirmed shipping details',
+      );
     }
     if (!isInitiator && exConfirm.receiverShippingConfirmed) {
-      throw new BadRequestException('You have already confirmed shipping details');
+      throw new BadRequestException(
+        'You have already confirmed shipping details',
+      );
     }
 
     const data: any = isInitiator
@@ -417,8 +455,12 @@ export class ExchangesService {
     });
 
     // Notify the other participant
-    const otherUserId = isInitiator ? exchange.receiverId : exchange.initiatorId;
-    const actorName = isInitiator ? exchange.initiator.name : exchange.receiver.name;
+    const otherUserId = isInitiator
+      ? exchange.receiverId
+      : exchange.initiatorId;
+    const actorName = isInitiator
+      ? exchange.initiator.name
+      : exchange.receiver.name;
 
     await this.notificationsService.create(
       otherUserId,
@@ -453,12 +495,15 @@ export class ExchangesService {
       throw new BadRequestException('Can only rate completed exchanges');
     }
     if (exchange.initiatorId !== userId && exchange.receiverId !== userId) {
-      throw new ForbiddenException('Only exchange participants can leave ratings');
+      throw new ForbiddenException(
+        'Only exchange participants can leave ratings',
+      );
     }
 
-    const toUserId = exchange.initiatorId === userId
-      ? exchange.receiverId
-      : exchange.initiatorId;
+    const toUserId =
+      exchange.initiatorId === userId
+        ? exchange.receiverId
+        : exchange.initiatorId;
 
     // Check for existing rating
     const existing = await this.prisma.rating.findUnique({
@@ -496,10 +541,14 @@ export class ExchangesService {
 
   async getRatings(exchangeId: string, userId: string) {
     // Verify the user is a participant
-    const exchange = await this.prisma.exchange.findUnique({ where: { id: exchangeId } });
+    const exchange = await this.prisma.exchange.findUnique({
+      where: { id: exchangeId },
+    });
     if (!exchange) throw new NotFoundException('Exchange not found');
     if (exchange.initiatorId !== userId && exchange.receiverId !== userId) {
-      throw new ForbiddenException('You are not a participant of this exchange');
+      throw new ForbiddenException(
+        'You are not a participant of this exchange',
+      );
     }
 
     return this.prisma.rating.findMany({
