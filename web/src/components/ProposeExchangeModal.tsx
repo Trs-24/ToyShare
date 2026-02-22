@@ -22,17 +22,16 @@ export default function ProposeExchangeModal({
 }: ProposeExchangeModalProps) {
   const { t } = useTranslation();
   const [myItems, setMyItems] = useState<any[]>([]);
+  const [exchanges, setExchanges] = useState<any[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      loadMyItems();
+      loadData();
       if (existingExchange) {
         setSelectedItemId(existingExchange.itemOfferedId);
-        // We're not tracking note in the backend for the exchange entity,
-        // but if we did we would set it here.
       } else {
         setSelectedItemId(null);
         setNote('');
@@ -40,14 +39,28 @@ export default function ProposeExchangeModal({
     }
   }, [isOpen, existingExchange]);
 
-  const loadMyItems = async () => {
+  const loadData = async () => {
     try {
       const profile = await api.users.getProfile();
-      const data = await api.items.list({ ownerId: profile.id });
-      setMyItems(data.items);
+      const [itemsRes, exchangesRes] = await Promise.all([
+        api.items.list({ ownerId: profile.id }),
+        api.exchanges.list(),
+      ]);
+      setMyItems(itemsRes.items);
+      setExchanges(Array.isArray(exchangesRes) ? exchangesRes : []);
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const isAlreadyProposed = (itemId: string) => {
+    if (!targetItem) return false;
+    return exchanges.some(
+      (ex) =>
+        ex.status === 'PROPOSED' &&
+        ((ex.itemOfferedId === itemId && ex.itemRequestedId === targetItem.id) ||
+          (ex.itemOfferedId === targetItem.id && ex.itemRequestedId === itemId)),
+    );
   };
 
   const handlePropose = async () => {
@@ -56,11 +69,9 @@ export default function ProposeExchangeModal({
     setLoading(true);
     try {
       if (existingExchange) {
-        // Edit existing proposal
         await api.exchanges.updateOffer(existingExchange.id, selectedItemId);
         alert(t('propose_updateSuccess') || t('propose_success'));
       } else {
-        // Create new proposal
         await api.exchanges.create({
           offeredItemId: selectedItemId,
           requestedItemId: targetItem.id,
@@ -97,31 +108,45 @@ export default function ProposeExchangeModal({
         <div className="p-6 overflow-y-auto flex-1">
           <h3 className="text-sm font-medium text-gray-700 mb-3">{t('propose_selectItem')}</h3>
           <div className="grid grid-cols-2 gap-3 mb-6">
-            {myItems.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setSelectedItemId(item.id)}
-                className={`cursor-pointer border-2 rounded-xl p-2 relative transition-all ${
-                  selectedItemId === item.id
-                    ? 'border-indigo-600 bg-indigo-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="aspect-square bg-gray-100 rounded-lg mb-2 overflow-hidden">
-                  {item.photos?.[0] ? (
-                    <img
-                      src={getMediaUrl(item.photos[0].url)}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">
-                      🧸
+            {myItems.map((item) => {
+              const disabled = isAlreadyProposed(item.id);
+              const isSelected = selectedItemId === item.id;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => !disabled && setSelectedItemId(item.id)}
+                  className={`cursor-pointer border-2 rounded-xl p-2 relative transition-all ${
+                    isSelected
+                      ? 'border-indigo-600 bg-indigo-50'
+                      : disabled
+                        ? 'border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed'
+                        : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="aspect-square bg-gray-100 rounded-lg mb-2 overflow-hidden">
+                    {item.photos?.[0] ? (
+                      <img
+                        src={getMediaUrl(item.photos[0].url)}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-2xl">
+                        🧸
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs font-medium text-gray-900 truncate">{item.title}</p>
+                  {disabled && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-[1px] rounded-xl">
+                      <span className="bg-gray-800 text-white text-[10px] px-2 py-1 rounded opacity-90 text-center leading-tight">
+                        {t('propose_alreadyProposed')}
+                      </span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs font-medium text-gray-900 truncate">{item.title}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <label className="block text-sm font-medium text-gray-700 mb-2">

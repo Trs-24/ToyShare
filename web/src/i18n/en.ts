@@ -342,6 +342,7 @@ const en: Record<TranslationKeys, string> = {
   propose_submitting: 'Sending...',
   propose_success: 'Exchange proposed!',
   propose_updateSuccess: 'Proposal updated!',
+  propose_alreadyProposed: 'This exchange is already being discussed',
   propose_error: 'Failed to propose exchange',
 
   // === Ratings ===

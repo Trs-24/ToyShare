@@ -341,6 +341,7 @@ const ru: Record<TranslationKeys, string> = {
   propose_submitting: 'Отправка...',
   propose_success: 'Обмен предложен!',
   propose_updateSuccess: 'Предложение обновлено!',
+  propose_alreadyProposed: 'Этот обмен уже обсуждается',
   propose_error: 'Не удалось предложить обмен',
 
   // === Ratings ===

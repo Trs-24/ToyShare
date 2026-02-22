@@ -339,6 +339,7 @@ const uk = {
   propose_submitting: 'Надсилання...',
   propose_success: 'Обмін запропоновано!',
   propose_updateSuccess: 'Пропозицію оновлено!',
+  propose_alreadyProposed: 'Цей обмін вже обговорюється',
   propose_error: 'Не вдалося запропонувати обмін',
 
   // === Ratings ===
