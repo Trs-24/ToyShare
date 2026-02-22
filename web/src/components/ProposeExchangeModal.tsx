@@ -10,6 +10,7 @@ interface ProposeExchangeModalProps {
   onClose: () => void;
   targetItem: any;
   existingExchange?: any; // The PROPOSED exchange where the current user is initiator
+  onSuccess?: () => void;
 }
 
 export default function ProposeExchangeModal({
@@ -17,6 +18,7 @@ export default function ProposeExchangeModal({
   onClose,
   targetItem,
   existingExchange,
+  onSuccess,
 }: ProposeExchangeModalProps) {
   const { t } = useTranslation();
   const [myItems, setMyItems] = useState<any[]>([]);
@@ -66,9 +68,8 @@ export default function ProposeExchangeModal({
         });
         alert(t('propose_success'));
       }
+      onSuccess?.();
       onClose();
-      // In a real app we might want to refresh the parent page state
-      window.location.reload();
     } catch (e: any) {
       alert(e?.message || t('propose_error'));
     } finally {

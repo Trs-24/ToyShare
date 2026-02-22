@@ -44,6 +44,20 @@ export class ExchangesService {
       );
     }
 
+    // NEW: Check if this user already proposed an exchange for this item
+    const existingProposal = await this.prisma.exchange.findFirst({
+      where: {
+        initiatorId: userId,
+        itemRequestedId: dto.requestedItemId,
+        status: 'PROPOSED',
+      },
+    });
+    if (existingProposal) {
+      throw new BadRequestException(
+        'You already have a pending proposal for this item',
+      );
+    }
+
     // Check if offered item is already in an active exchange
     if (dto.offeredItemId) {
       const activeExchangeForOffered = await this.prisma.exchange.findFirst({

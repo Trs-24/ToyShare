@@ -28,6 +28,29 @@ export default function ItemDetailPage() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [activeProposal, setActiveProposal] = useState<any>(null);
 
+  const loadProposalStatus = (targetItem: any, userData: any) => {
+    if (userData && targetItem) {
+      api.exchanges
+        .list()
+        .then((exchanges) => {
+          const exchangesList = Array.isArray(exchanges) ? exchanges : [];
+          const proposal = exchangesList.find((ex: any) => {
+            const targetItemId = String(targetItem.id);
+            const currentUserId = String(userData.id);
+            return (
+              (String(ex.itemRequestedId) === targetItemId ||
+                String(ex.itemRequested?.id) === targetItemId) &&
+              (String(ex.initiatorId) === currentUserId ||
+                String(ex.initiator?.id) === currentUserId) &&
+              ex.status === 'PROPOSED'
+            );
+          });
+          setActiveProposal(proposal || null);
+        })
+        .catch(console.error);
+    }
+  };
+
   useEffect(() => {
     if (params.id) {
       Promise.all([api.items.get(params.id as string), api.users.getProfile().catch(() => null)])
@@ -36,26 +59,7 @@ export default function ItemDetailPage() {
           setCurrentUser(userData);
           setSelectedPhotoIndex(0);
 
-          if (userData && itemData) {
-            api.exchanges
-              .list()
-              .then((exchanges) => {
-                const exchangesList = Array.isArray(exchanges) ? exchanges : [];
-                const proposal = exchangesList.find((ex: any) => {
-                  const targetItemId = String(itemData.id);
-                  const currentUserId = String(userData.id);
-                  return (
-                    (String(ex.itemRequestedId) === targetItemId ||
-                      String(ex.itemRequested?.id) === targetItemId) &&
-                    (String(ex.initiatorId) === currentUserId ||
-                      String(ex.initiator?.id) === currentUserId) &&
-                    ex.status === 'PROPOSED'
-                  );
-                });
-                setActiveProposal(proposal || null);
-              })
-              .catch(console.error);
-          }
+          loadProposalStatus(itemData, userData);
 
           if (itemData.category) {
             api.items
@@ -469,6 +473,7 @@ export default function ItemDetailPage() {
         onClose={() => setIsModalOpen(false)}
         targetItem={item}
         existingExchange={activeProposal}
+        onSuccess={() => loadProposalStatus(item, currentUser)}
       />
     </>
   );
