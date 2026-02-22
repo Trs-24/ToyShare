@@ -82,7 +82,7 @@ function HomeContent() {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
     if (value) current.set(key, value);
     else current.delete(key);
-    router.push(`/?${current.toString()}`);
+    router.push(`/catalog?${current.toString()}`);
   };
 
   const handleLimitChange = (newLimit: number) => {
@@ -237,7 +237,7 @@ function HomeContent() {
             </div>
 
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/catalog')}
               className="text-sm text-teal-600 hover:text-teal-800"
             >
               {t('catalog_resetFilters')}
