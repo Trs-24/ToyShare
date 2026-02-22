@@ -318,7 +318,7 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 ))}
-                <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500 transition">
+                <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-teal-500 transition">
                   <span className="text-2xl text-gray-400">+</span>
                   <input
                     type="file"
@@ -338,7 +338,7 @@ export default function DashboardPage() {
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12 text-gray-400">
@@ -349,7 +349,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {items.map((item) => (
               <div key={item.id} className="card p-4 flex gap-4">
-                <div className="w-20 h-20 rounded-xl bg-indigo-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <div className="w-20 h-20 rounded-xl bg-teal-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
                   {item.photos?.[0] ? (
                     <img
                       src={getMediaUrl(item.photos[0].url)}
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                   <h3 className="font-semibold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-1">{item.description}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="badge bg-indigo-50 text-indigo-700">
+                    <span className="badge bg-teal-50 text-teal-700">
                       {getConditionLabel(t, item.condition)}
                     </span>
                     {item.category && (
@@ -381,7 +381,7 @@ export default function DashboardPage() {
                       </span>
                     )}
                     {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) ? (
-                      <span className="badge bg-purple-100 text-purple-700">
+                      <span className="badge bg-emerald-100 text-emerald-700">
                         {t('dash_inExchange')}
                       </span>
                     ) : item.isAvailable ? (
@@ -395,7 +395,7 @@ export default function DashboardPage() {
                   <div className="flex gap-2 mt-4">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="text-sm text-indigo-600 hover:text-indigo-800"
+                      className="text-sm text-teal-600 hover:text-teal-800"
                     >
                       {t('dash_editItem')}
                     </button>

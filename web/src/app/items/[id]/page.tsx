@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import { useTranslation } from '@/context/LanguageContext';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
-import ProposeExchangeModal from '@/components/ProposeExchangeModal';
+import { useRouter } from 'next/navigation';
 import {
   getConditionLabel,
   getAgeLabel,
@@ -19,12 +19,12 @@ import { Item } from '@/lib/types';
 
 export default function ItemDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const { t } = useTranslation();
   const [item, setItem] = useState<Item | null>(null);
   const [similarItems, setSimilarItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [activeProposal, setActiveProposal] = useState<any>(null);
 
@@ -211,7 +211,7 @@ export default function ItemDetailPage() {
                   {item.description}
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mb-10">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                   <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_age')}
@@ -247,14 +247,14 @@ export default function ItemDetailPage() {
                 </div>
 
                 {item.wishlist && (
-                  <div className="mb-10 p-6 rounded-[28px] bg-indigo-50/50 border border-indigo-100/50">
+                  <div className="mb-10 p-6 rounded-[28px] bg-teal-50/50 border border-teal-100/50">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-xl">🔍</span>
-                      <h3 className="text-sm font-black text-indigo-900 uppercase tracking-widest">
+                      <h3 className="text-sm font-black text-teal-900 uppercase tracking-widest">
                         {t('item_lookingFor')}
                       </h3>
                     </div>
-                    <p className="text-lg font-medium text-indigo-900/80 leading-relaxed">
+                    <p className="text-lg font-medium text-teal-900/80 leading-relaxed">
                       {item.wishlist}
                     </p>
                   </div>
@@ -324,7 +324,7 @@ export default function ItemDetailPage() {
                 <div className="flex gap-4">
                   {!isOwner && currentUser && !isInActiveExchange && (
                     <button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => router.push(`/items/${item.id}/propose`)}
                       className={`flex-1 px-6 py-4 text-white font-bold rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 ${activeProposal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-teal-500 hover:bg-teal-600'}`}
                     >
                       <svg
@@ -457,14 +457,6 @@ export default function ItemDetailPage() {
           </div>
         )}
       </main>
-
-      <ProposeExchangeModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        targetItem={item}
-        existingExchange={activeProposal}
-        onSuccess={() => loadProposalStatus(item, currentUser)}
-      />
     </>
   );
 }

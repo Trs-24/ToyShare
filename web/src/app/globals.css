@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 :root {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
+  --primary: #2fb39e;
+  --primary-dark: #248a7a;
   --accent: #f59e0b;
   --bg: #f8fafc;
   --card: #ffffff;
@@ -25,7 +25,7 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98];
+    @apply bg-teal-500 hover:bg-teal-600 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98];
   }
 
   .btn-secondary {
@@ -41,7 +41,7 @@ body {
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all duration-200 bg-white;
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100 outline-none transition-all duration-200 bg-white;
   }
 
   .badge {

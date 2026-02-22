@@ -90,16 +90,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50 p-4">
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium mb-6"
+          className="inline-flex items-center text-sm text-teal-600 hover:text-teal-800 font-medium mb-6"
         >
           {t('register_backToHome')}
         </Link>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-emerald-600 bg-clip-text text-transparent">
             🧸 ToyShare
           </h1>
           <p className="text-gray-500 mt-2">{t('register_title')}</p>
@@ -111,18 +111,18 @@ export default function RegisterPage() {
             <div key={s} className="flex items-center gap-2">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                  step >= s ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-200 text-gray-400'
+                  step >= s ? 'bg-teal-500 text-white shadow-md' : 'bg-gray-200 text-gray-400'
                 }`}
               >
                 {s}
               </div>
               <span
-                className={`text-sm hidden sm:inline ${step >= s ? 'text-indigo-600 font-medium' : 'text-gray-400'}`}
+                className={`text-sm hidden sm:inline ${step >= s ? 'text-teal-600 font-medium' : 'text-gray-400'}`}
               >
                 {s === 1 ? t('register_step1') : t('register_step2')}
               </span>
               {s < STEPS.length && (
-                <div className={`w-8 h-0.5 ${step > s ? 'bg-indigo-500' : 'bg-gray-200'}`} />
+                <div className={`w-8 h-0.5 ${step > s ? 'bg-teal-500' : 'bg-gray-200'}`} />
               )}
             </div>
           ))}
@@ -232,7 +232,7 @@ export default function RegisterPage() {
                 <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
               )}
 
-              <div className="bg-indigo-50 text-indigo-700 text-sm p-3 rounded-xl">
+              <div className="bg-teal-50 text-teal-700 text-sm p-3 rounded-xl">
                 📦 {t('register_shippingHint')}
               </div>
 
@@ -299,7 +299,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-gray-500">
             {t('register_hasAccount')}{' '}
-            <Link href="/login" className="text-indigo-600 hover:text-indigo-800 font-medium">
+            <Link href="/login" className="text-teal-600 hover:text-teal-800 font-medium">
               {t('register_loginLink')}
             </Link>
           </p>

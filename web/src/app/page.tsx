@@ -16,7 +16,7 @@ export default function LandingPage() {
         <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
           <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-100 bg-indigo-50/50 text-indigo-700 text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 bg-teal-50/50 text-teal-700 text-sm font-medium mb-6">
                 <span>✨</span> {t('hero_freeHeader')}
               </div>
 

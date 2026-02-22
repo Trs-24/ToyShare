@@ -238,7 +238,7 @@ function HomeContent() {
 
             <button
               onClick={() => router.push('/')}
-              className="text-sm text-indigo-600 hover:text-indigo-800"
+              className="text-sm text-teal-600 hover:text-teal-800"
             >
               {t('catalog_resetFilters')}
             </button>
@@ -261,7 +261,7 @@ function HomeContent() {
                         onClick={() => handleLimitChange(opt)}
                         className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                           limit === opt
-                            ? 'bg-indigo-500 text-white'
+                            ? 'bg-teal-500 text-white'
                             : 'bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
@@ -275,7 +275,7 @@ function HomeContent() {
 
             {loading ? (
               <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
               </div>
             ) : items.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
@@ -312,7 +312,7 @@ function HomeContent() {
                         </div>
                         {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) && (
                           <div className="absolute bottom-2 left-2 right-2">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-600/90 text-white text-xs font-medium backdrop-blur-sm shadow">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600/90 text-white text-xs font-medium backdrop-blur-sm shadow">
                               {t('catalog_inExchange')}
                             </span>
                           </div>
@@ -357,7 +357,7 @@ function HomeContent() {
                           onClick={() => setPage(p)}
                           className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
                             page === p
-                              ? 'bg-indigo-500 text-white shadow-sm'
+                              ? 'bg-teal-500 text-white shadow-sm'
                               : 'text-gray-600 hover:bg-gray-100'
                           }`}
                         >

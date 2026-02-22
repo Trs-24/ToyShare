@@ -326,13 +326,20 @@ const uk = {
   exDetail_chatSend: 'Надіслати',
   exDetail_chatEditTitle: 'Редагувати',
   exDetail_chatDeleteTitle: 'Видалити',
+  item_backToItem: 'Назад до товару',
 
-  // === Propose Exchange Modal ===
+  // === Propose Exchange ===
   propose_title: 'Запропонувати обмін',
-  propose_subtitle: 'Запропонувати річ за',
+  propose_subtitle: 'Виберіть, що запропонувати взамін',
+  propose_subtitle_prefix: 'Виберіть, що запропонувати взамін на',
+  propose_youWantToGet: 'ВИ ХОЧЕТЕ ОТРИМАТИ',
+  propose_selectYourItem: 'ВИБЕРІТЬ ВАШ ТОВАР ДЛЯ ОБМІНУ',
+  propose_noWishes: 'Будь-які зустрічні пропозиції',
+  propose_noOwnItems: 'У вас ще немає товарів для обміну',
+  propose_addFirstItem: 'Додати перший товар',
+  propose_selectItem: 'Виберіть товар',
   propose_editTitle: 'Змінити пропозицію',
   propose_editSubtitle: 'Запропонувати іншу річ за',
-  propose_selectItem: 'Оберіть вашу річ:',
   propose_note: "Повідомлення (необов'язково)",
   propose_notePlaceholder: 'Привіт! Хочу запропонувати обмін...',
   propose_cancelBtn: 'Скасувати',

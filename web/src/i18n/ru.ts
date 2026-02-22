@@ -328,13 +328,20 @@ const ru: Record<TranslationKeys, string> = {
   exDetail_chatSend: 'Отправить',
   exDetail_chatEditTitle: 'Редактировать',
   exDetail_chatDeleteTitle: 'Удалить',
+  item_backToItem: 'Назад к товару',
 
-  // === Propose Exchange Modal ===
+  // === Propose Exchange ===
   propose_title: 'Предложить обмен',
-  propose_subtitle: 'Предложить вещь за',
+  propose_subtitle: 'Выберите, что предложить взамен',
+  propose_subtitle_prefix: 'Выберите, что предложить взамен на',
+  propose_youWantToGet: 'ВЫ ХОТИТЕ ПОЛУЧИТЬ',
+  propose_selectYourItem: 'ВЫБЕРИТЕ ВАШ ТОВАР ДЛЯ ОБМЕНА',
+  propose_noWishes: 'Любые встречные предложения',
+  propose_noOwnItems: 'У вас еще нет товаров для обмена',
+  propose_addFirstItem: 'Добавить первый товар',
+  propose_selectItem: 'Выберите товар',
   propose_editTitle: 'Изменить предложение',
   propose_editSubtitle: 'Предложить другую вещь за',
-  propose_selectItem: 'Выберите вашу вещь:',
   propose_note: 'Сообщение (необязательно)',
   propose_notePlaceholder: 'Привет! Хочу предложить обмен...',
   propose_cancelBtn: 'Отмена',

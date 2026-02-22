@@ -134,7 +134,7 @@ export default function Navbar() {
         <div className="flex items-center gap-6 flex-1 max-w-2xl mr-4">
           <Link
             href="/"
-            className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex-shrink-0"
+            className="text-xl font-bold bg-gradient-to-r from-teal-500 to-emerald-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex-shrink-0"
           >
             🧸 ToyShare
           </Link>
@@ -147,19 +147,19 @@ export default function Navbar() {
             <div className="flex-1 hidden md:flex items-center justify-center gap-8">
               <Link
                 href="/"
-                className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition"
+                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
               >
                 {t('nav_home')}
               </Link>
               <Link
                 href="/catalog"
-                className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition"
+                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
               >
                 {t('nav_catalog')}
               </Link>
               <Link
                 href="/#how-it-works"
-                className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition"
+                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
               >
                 {t('nav_howItWorks')}
               </Link>
@@ -221,7 +221,7 @@ export default function Navbar() {
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllRead}
-                          className="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                          className="text-xs text-teal-600 hover:text-teal-700 font-medium transition-colors"
                         >
                           {t('notif_markAllRead')}
                         </button>
@@ -248,13 +248,13 @@ export default function Navbar() {
                               router.push('/exchanges');
                             }}
                             className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-gray-50 transition-colors ${
-                              !notif.isRead ? 'bg-indigo-50/50' : ''
+                              !notif.isRead ? 'bg-teal-50/50' : ''
                             }`}
                           >
                             <div className="flex items-start gap-3">
                               <div
                                 className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
-                                  !notif.isRead ? 'bg-indigo-500' : 'bg-transparent'
+                                  !notif.isRead ? 'bg-teal-500' : 'bg-transparent'
                                 }`}
                               />
                               <div className="flex-1 min-w-0">
@@ -291,7 +291,7 @@ export default function Navbar() {
                   <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate hidden sm:block">
                     {user.name || t('you')}
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 border border-indigo-200 overflow-hidden flex items-center justify-center text-indigo-600 flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-teal-100 border border-teal-200 overflow-hidden flex items-center justify-center text-teal-600 flex-shrink-0">
                     {user.avatarUrl ? (
                       <img
                         src={getAvatarUrl(user.avatarUrl)!}
@@ -318,21 +318,21 @@ export default function Navbar() {
                       <Link
                         href="/profile"
                         onClick={handleLinkClick}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors flex items-center gap-2"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                       >
                         <span>👤</span> {t('nav_profile')}
                       </Link>
                       <Link
                         href="/dashboard"
                         onClick={handleLinkClick}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors flex items-center gap-2"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                       >
                         <span>🧸</span> {t('nav_myItems')}
                       </Link>
                       <Link
                         href="/exchanges"
                         onClick={handleLinkClick}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                       >
                         <span>⇄</span> {t('nav_exchanges')}
                         {unreadCount > 0 && (
@@ -345,7 +345,7 @@ export default function Navbar() {
                         <Link
                           href="/admin"
                           onClick={handleLinkClick}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors flex items-center gap-2"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                         >
                           <span>⚙️</span> Адмінка
                         </Link>
@@ -378,7 +378,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/register"
-                className="text-sm font-medium bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm hover:shadow-md"
+                className="text-sm font-medium bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition shadow-sm hover:shadow-md"
               >
                 {t('nav_register')}
               </Link>
@@ -393,9 +393,6 @@ export default function Navbar() {
 function SearchInput() {
   const router = useRouter();
   const { t } = useTranslation();
-  // Using useSearchParams from next/navigation would be ideal, but we need strictly client-side access for the defaultValue
-  // to avoid hydration mismatches if possible. However, safely accessing window is fine in useEffect.
-  // For simplicity and to avoid hydration errors, we'll verify existing params in useEffect.
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -430,7 +427,7 @@ function SearchInput() {
       <input
         type="text"
         placeholder={t('catalog_searchPlaceholder') || 'Search...'}
-        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
