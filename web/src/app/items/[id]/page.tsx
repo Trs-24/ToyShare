@@ -10,6 +10,7 @@ import ProposeExchangeModal from '@/components/ProposeExchangeModal';
 import {
   getConditionLabel,
   getAgeLabel,
+  getGenderLabel,
   getTypeLabel,
   getCategoryLabel,
 } from '@/constants/itemOptions';
@@ -221,6 +222,22 @@ export default function ItemDetailPage() {
                   </div>
                   <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                      {t('item_gender')}
+                    </p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {item.gender ? getGenderLabel(t, item.gender) : t('notSpecified')}
+                    </p>
+                  </div>
+                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                      {t('item_type')}
+                    </p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {item.type ? getTypeLabel(t, item.type) : t('notSpecified')}
+                    </p>
+                  </div>
+                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_added')}
                     </p>
                     <p className="text-lg font-bold text-gray-900">
@@ -228,6 +245,20 @@ export default function ItemDetailPage() {
                     </p>
                   </div>
                 </div>
+
+                {item.wishlist && (
+                  <div className="mb-10 p-6 rounded-[28px] bg-indigo-50/50 border border-indigo-100/50">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xl">🔍</span>
+                      <h3 className="text-sm font-black text-indigo-900 uppercase tracking-widest">
+                        {t('item_lookingFor')}
+                      </h3>
+                    </div>
+                    <p className="text-lg font-medium text-indigo-900/80 leading-relaxed">
+                      {item.wishlist}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="pt-8 border-t border-gray-100 space-y-8">

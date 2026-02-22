@@ -183,8 +183,10 @@ const ru: Record<TranslationKeys, string> = {
     'Мы отправили письмо на вашу почту. Пожалуйста, перейдите по ссылке в письме, чтобы подтвердить аккаунт.',
 
   // === Item Detail ===
-  item_backToCatalog: '← Назад к каталогу',
+  item_backToCatalog: 'Назад к каталогу',
   item_age: 'Возраст',
+  item_gender: 'Пол',
+  item_type: 'Тип',
   item_added: 'Добавлено',
   item_viewProfile: 'Профиль',
   item_similarItems: 'Похожие предложения',
