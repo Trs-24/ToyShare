@@ -301,7 +301,10 @@ export default function ItemDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <button className="px-6 py-3 rounded-2xl border-2 border-teal-500 text-teal-600 font-bold hover:bg-teal-500 hover:text-white transition-all shadow-sm flex items-center gap-2">
+                    <Link
+                      href={`/catalog?ownerId=${item.ownerId}&ownerName=${encodeURIComponent(item.owner.name || '')}`}
+                      className="px-6 py-3 rounded-2xl border-2 border-teal-500 text-teal-600 font-bold hover:bg-teal-500 hover:text-white transition-all shadow-sm flex items-center gap-2"
+                    >
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -312,11 +315,11 @@ export default function ItemDetailPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth="2"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                         />
                       </svg>
-                      {t('item_viewProfile')}
-                    </button>
+                      {t('item_viewAllItems')}
+                    </Link>
                   </div>
                 )}
 

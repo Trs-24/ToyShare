@@ -45,6 +45,8 @@ function HomeContent() {
     age: searchParams.get('age') || '',
     type: searchParams.get('type') || '',
     city: searchParams.get('city') || '',
+    ownerId: searchParams.get('ownerId') || '',
+    ownerName: searchParams.get('ownerName') || '',
   });
 
   // Update filters when URL params change
@@ -57,6 +59,8 @@ function HomeContent() {
       age: searchParams.get('age') || '',
       type: searchParams.get('type') || '',
       city: searchParams.get('city') || '',
+      ownerId: searchParams.get('ownerId') || '',
+      ownerName: searchParams.get('ownerName') || '',
     });
   }, [searchParams]);
 
@@ -117,7 +121,11 @@ function HomeContent() {
     <>
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">{t('catalog_title')}</h1>
+        <h1 className="text-3xl font-bold mb-8">
+          {filters.ownerName
+            ? t('catalog_userItems').replace('{name}', filters.ownerName)
+            : t('catalog_title')}
+        </h1>
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
