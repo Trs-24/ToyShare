@@ -350,6 +350,8 @@ const en: Record<TranslationKeys, string> = {
   propose_saveBtn: 'Save Changes',
   propose_submitting: 'Sending...',
   propose_success: 'Exchange proposed!',
+  propose_success_title: 'Proposal sent! 🎉',
+  propose_success_text: 'Your exchange proposal has been sent to {name}. Wait for a response.',
   propose_updateSuccess: 'Proposal updated!',
   propose_alreadyProposed: 'This exchange is already being discussed',
   propose_error: 'Failed to propose exchange',

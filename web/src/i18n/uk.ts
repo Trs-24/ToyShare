@@ -347,6 +347,8 @@ const uk = {
   propose_saveBtn: 'Зберегти зміни',
   propose_submitting: 'Надсилання...',
   propose_success: 'Обмін запропоновано!',
+  propose_success_title: 'Пропозицію надіслано! 🎉',
+  propose_success_text: 'Вашу пропозицію обміну надіслано {name}. Очікуйте на відповідь.',
   propose_updateSuccess: 'Пропозицію оновлено!',
   propose_alreadyProposed: 'Цей обмін вже обговорюється',
   propose_error: 'Не вдалося запропонувати обмін',

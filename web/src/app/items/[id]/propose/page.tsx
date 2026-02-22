@@ -19,6 +19,7 @@ export default function ProposeExchangePage() {
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -79,8 +80,11 @@ export default function ProposeExchangePage() {
         requestedItemId: targetItem.id,
         note,
       });
-      alert(t('propose_success'));
-      router.push(`/items/${targetItem.id}`);
+      setShowSuccess(true);
+      // Auto-redirect after 3 seconds
+      setTimeout(() => {
+        router.push('/catalog');
+      }, 3000);
     } catch (e: any) {
       alert(e?.message || t('propose_error'));
     } finally {
@@ -317,6 +321,33 @@ export default function ProposeExchangePage() {
             )}
           </button>
         </div>
+
+        {/* Success Modal */}
+        {showSuccess && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity duration-300" />
+            <div className="relative bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl animate-pop text-center">
+              <div className="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                ✨
+              </div>
+              <h2 className="text-2xl font-black text-gray-900 mb-4">
+                {t('propose_success_title') || 'Предложение отправлено! 🎉'}
+              </h2>
+              <p className="text-gray-600 font-medium leading-relaxed mb-8">
+                {(
+                  t('propose_success_text') ||
+                  'Ваше предложение обмена отправлено {name}. Ожидайте ответа.'
+                ).replace('{name}', targetItem.owner?.name || '')}
+              </p>
+              <button
+                onClick={() => router.push('/catalog')}
+                className="w-full py-4 bg-teal-500 text-white font-black rounded-[20px] hover:bg-teal-600 transition-all shadow-lg shadow-teal-100"
+              >
+                {t('nav_catalog') || 'Перейти в каталог'}
+              </button>
+            </div>
+          </div>
+        )}
       </main>
 
       <style jsx global>{`
@@ -332,6 +363,20 @@ export default function ProposeExchangePage() {
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           overflow: hidden;
+        }
+
+        @keyframes pop {
+          0% {
+            transform: scale(0.9);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        .animate-pop {
+          animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
       `}</style>
     </div>

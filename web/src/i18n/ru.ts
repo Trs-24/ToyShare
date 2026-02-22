@@ -349,6 +349,8 @@ const ru: Record<TranslationKeys, string> = {
   propose_saveBtn: 'Сохранить изменения',
   propose_submitting: 'Отправка...',
   propose_success: 'Обмен предложен!',
+  propose_success_title: 'Предложение отправлено! 🎉',
+  propose_success_text: 'Ваше предложение обмена отправлено {name}. Ожидайте ответа.',
   propose_updateSuccess: 'Предложение обновлено!',
   propose_alreadyProposed: 'Этот обмен уже обсуждается',
   propose_error: 'Не удалось предложить обмен',
