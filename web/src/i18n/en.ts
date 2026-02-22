@@ -61,7 +61,7 @@ const en: Record<TranslationKeys, string> = {
 
   cta_title: 'Ready to start exchanging?',
   cta_subtitle: "Join ToyShare and give your child's toys a new story",
-  cta_btn: 'Create Account for Free',
+  cta_btn: "Let's exchange!",
 
   footer_description: 'Platform for exchanging kid toys and items. Give things a second life!',
   footer_platform: 'Platform',

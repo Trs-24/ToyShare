@@ -189,7 +189,7 @@ export default function LandingPage() {
                   {t('cta_subtitle')}
                 </p>
                 <Link
-                  href="/register"
+                  href="/catalog"
                   className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-white text-teal-600 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-lg hover:shadow-xl"
                 >
                   {t('cta_btn')}
@@ -207,111 +207,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
-      {/* Global Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="md:col-span-1">
-              <Link
-                href="/"
-                className="inline-block text-xl font-bold bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent mb-4"
-              >
-                🧸 ToyShare
-              </Link>
-              <p className="text-sm text-gray-500 leading-relaxed pr-4">
-                {t('footer_description')}
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-5">{t('footer_platform')}</h4>
-              <ul className="space-y-4">
-                <li>
-                  <Link
-                    href="/catalog"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('nav_catalog')}
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href="#how-it-works"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('nav_howItWorks')}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_faq')}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-5">{t('footer_company')}</h4>
-              <ul className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_about')}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_contacts')}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_blog')}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-5">{t('footer_legal')}</h4>
-              <ul className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_terms')}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-gray-500 hover:text-teal-600 transition-colors"
-                  >
-                    {t('footer_privacy')}
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-gray-200 text-center">
-            <p className="text-sm text-gray-400">{t('footer_rights')}</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
