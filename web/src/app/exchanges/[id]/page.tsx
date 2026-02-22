@@ -11,6 +11,7 @@ import ExchangeChat from '@/components/exchanges/ExchangeChat';
 import ExchangeShipping from '@/components/exchanges/ExchangeShipping';
 import ExchangeRating from '@/components/exchanges/ExchangeRating';
 import ExchangeContact from '@/components/exchanges/ExchangeContact';
+import Link from 'next/link';
 
 export default function ExchangeDetailPage() {
   const { id } = useParams();
@@ -71,7 +72,11 @@ export default function ExchangeDetailPage() {
     setError(null);
     try {
       await api.exchanges.updateStatus(id as string, status);
-      await loadData();
+      if (status === 'REJECTED') {
+        router.push('/exchanges');
+      } else {
+        await loadData();
+      }
     } catch (e: any) {
       console.error('Exchange update failed:', e);
       setError(e?.message || t('exDetail_actionError'));
@@ -158,6 +163,22 @@ export default function ExchangeDetailPage() {
     <>
       <Navbar />
       <div className="max-w-3xl mx-auto p-6 pb-12">
+        {/* Back Link */}
+        <Link
+          href="/exchanges"
+          className="inline-flex items-center text-gray-500 hover:text-gray-700 font-medium mb-6 transition-colors"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          {t('exchanges_title') || 'Обмены'}
+        </Link>
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-900">{t('exDetail_title')}</h1>
