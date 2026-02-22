@@ -42,9 +42,9 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
-          {/* Ambient glow blobs */}
-          <div className="absolute -top-40 -left-40 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl pointer-events-none" />
+          {/* Ambient glow — lightweight colored circles */}
+          <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-teal-100/30 rounded-full pointer-events-none" />
+          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-cyan-100/20 rounded-full pointer-events-none" />
 
           <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="max-w-xl">
@@ -120,12 +120,10 @@ export default function LandingPage() {
                 <div className="absolute inset-x-0 top-0 pt-8 text-center text-3xl font-bold text-[#2a4f15] tracking-wide">
                   ToyShare
                 </div>
-                <div className="text-[120px] filter drop-shadow-xl z-10 leading-none select-none animate-float">
-                  🧸🚗
-                </div>
+                <div className="text-[120px] z-10 leading-none select-none animate-float">🧸🚗</div>
 
                 <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg shadow-black/5 flex items-center gap-3 ring-1 ring-white/50">
+                  <div className="bg-white/95 rounded-2xl p-4 shadow-md flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-100 to-cyan-100 flex items-center justify-center text-xl flex-shrink-0">
                       🎉
                     </div>
@@ -161,9 +159,9 @@ export default function LandingPage() {
               ].map((step, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-teal-100/40 hover:-translate-y-1 transition-[transform,box-shadow] duration-300 will-change-transform relative overflow-hidden group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-300 relative overflow-hidden group`}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-teal-50/0 group-hover:from-teal-50/50 group-hover:to-cyan-50/30 transition-opacity duration-500 rounded-3xl" />
+                  <div className="absolute inset-0 bg-teal-50/0 group-hover:bg-teal-50/40 transition-colors duration-300 rounded-3xl" />
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:bg-teal-100 transition-transform duration-300">
@@ -223,7 +221,7 @@ export default function LandingPage() {
               ].map((reason, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex gap-6 items-start hover:shadow-xl ${reason.glow} hover:-translate-y-1 transition-[transform,box-shadow] duration-300 will-change-transform cursor-default group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex gap-6 items-start hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-300 cursor-default group`}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-teal-50 flex-shrink-0 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
                     {reason.icon}
@@ -237,9 +235,9 @@ export default function LandingPage() {
             </div>
 
             {/* CTA Banner */}
-            <div className="reveal reveal-scale mt-24 max-w-5xl mx-auto bg-gradient-to-r from-teal-500 to-cyan-500 rounded-[40px] p-10 md:p-16 text-center text-white shadow-2xl shadow-teal-300/30 relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl" />
-              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl" />
+            <div className="reveal reveal-scale mt-24 max-w-5xl mx-auto bg-gradient-to-r from-teal-500 to-cyan-500 rounded-[40px] p-10 md:p-16 text-center text-white shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mr-10 -mt-10 w-48 h-48 rounded-full bg-white/10" />
+              <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-48 h-48 rounded-full bg-white/10" />
 
               <div className="relative z-10">
                 <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-white">
