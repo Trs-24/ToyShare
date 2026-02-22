@@ -181,6 +181,11 @@ const uk = {
     'Ми надіслали лист на вашу пошту. Будь ласка, перейдіть за посиланням у листі, щоб підтвердити акаунт.',
 
   // === Item Detail ===
+  item_backToCatalog: '← Назад до каталогу',
+  item_age: 'Вік',
+  item_added: 'Додано',
+  item_viewProfile: 'Профіль',
+  item_similarItems: 'Схожі пропозиції',
   item_notFound: 'Товар не знайдено',
   item_proposeExchange: '🔄 Предложити обмін',
   item_inExchange: '🔄 Ця річ в процесі обміну',

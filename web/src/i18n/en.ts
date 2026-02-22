@@ -184,6 +184,11 @@ const en: Record<TranslationKeys, string> = {
     'We sent an email to your address. Please click the link in the email to verify your account.',
 
   // === Item Detail ===
+  item_backToCatalog: '← Back to catalog',
+  item_age: 'Age',
+  item_added: 'Added',
+  item_viewProfile: 'Profile',
+  item_similarItems: 'Similar suggestions',
   item_notFound: 'Item not found',
   item_proposeExchange: '🔄 Propose Exchange',
   item_inExchange: '🔄 This item is in an exchange',
