@@ -81,10 +81,10 @@ export default function ProposeExchangePage() {
         note,
       });
       setShowSuccess(true);
-      // Auto-redirect after 3 seconds
+      // Auto-redirect after 7 seconds
       setTimeout(() => {
         router.push('/catalog');
-      }, 3000);
+      }, 7000);
     } catch (e: any) {
       alert(e?.message || t('propose_error'));
     } finally {
@@ -333,18 +333,12 @@ export default function ProposeExchangePage() {
               <h2 className="text-2xl font-black text-gray-900 mb-4">
                 {t('propose_success_title') || 'Предложение отправлено! 🎉'}
               </h2>
-              <p className="text-gray-600 font-medium leading-relaxed mb-8">
+              <p className="text-gray-600 font-medium leading-relaxed">
                 {(
                   t('propose_success_text') ||
                   'Ваше предложение обмена отправлено {name}. Ожидайте ответа.'
                 ).replace('{name}', targetItem.owner?.name || '')}
               </p>
-              <button
-                onClick={() => router.push('/catalog')}
-                className="w-full py-4 bg-teal-500 text-white font-black rounded-[20px] hover:bg-teal-600 transition-all shadow-lg shadow-teal-100"
-              >
-                {t('nav_catalog') || 'Перейти в каталог'}
-              </button>
             </div>
           </div>
         )}
