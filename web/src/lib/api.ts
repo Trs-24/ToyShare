@@ -75,6 +75,11 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ status }),
       }),
+    updateOffer: (id: string, itemOfferedId: string) =>
+      request(`/exchanges/${id}/offer`, {
+        method: 'PATCH',
+        body: JSON.stringify({ itemOfferedId }),
+      }),
     updateShipping: (
       id: string,
       data: { meetingDate?: string; postOffice?: string; shippingNote?: string },

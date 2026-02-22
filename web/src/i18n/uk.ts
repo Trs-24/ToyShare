@@ -188,6 +188,7 @@ const uk = {
   item_similarItems: 'Схожі пропозиції',
   item_notFound: 'Товар не знайдено',
   item_proposeExchange: '🔄 Предложити обмін',
+  item_changeProposal: 'Змінити пропозицію',
   item_inExchange: '🔄 Ця річ в процесі обміну',
   item_lookingFor: 'Шукає взамін',
   item_owner: 'Власник',
@@ -327,13 +328,17 @@ const uk = {
   // === Propose Exchange Modal ===
   propose_title: 'Запропонувати обмін',
   propose_subtitle: 'Запропонувати річ за',
+  propose_editTitle: 'Змінити пропозицію',
+  propose_editSubtitle: 'Запропонувати іншу річ за',
   propose_selectItem: 'Оберіть вашу річ:',
   propose_note: "Повідомлення (необов'язково)",
   propose_notePlaceholder: 'Привіт! Хочу запропонувати обмін...',
   propose_cancelBtn: 'Скасувати',
-  propose_submitBtn: 'Запропонувати обмін',
+  propose_submitBtn: 'Запропонувати',
+  propose_saveBtn: 'Зберегти зміни',
   propose_submitting: 'Надсилання...',
   propose_success: 'Обмін запропоновано!',
+  propose_updateSuccess: 'Пропозицію оновлено!',
   propose_error: 'Не вдалося запропонувати обмін',
 
   // === Ratings ===

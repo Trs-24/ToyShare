@@ -14,13 +14,14 @@ import { ExchangesService } from './exchanges.service';
 import { CreateExchangeDto } from './dto/create-exchange.dto';
 import { UpdateExchangeDto } from './dto/update-exchange.dto';
 import { UpdateShippingDto } from './dto/update-shipping.dto';
+import { UpdateOfferDto } from './dto/update-offer.dto';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('exchanges')
 @UseGuards(JwtAuthGuard)
 export class ExchangesController {
-  constructor(private readonly exchangesService: ExchangesService) { }
+  constructor(private readonly exchangesService: ExchangesService) {}
 
   @Post()
   create(@Request() req, @Body() dto: CreateExchangeDto) {
@@ -44,6 +45,15 @@ export class ExchangesController {
     @Body() dto: UpdateExchangeDto,
   ) {
     return this.exchangesService.updateStatus(id, req.user.userId, dto);
+  }
+
+  @Patch(':id/offer')
+  updateOffer(
+    @Param('id') id: string,
+    @Request() req,
+    @Body() dto: UpdateOfferDto,
+  ) {
+    return this.exchangesService.updateOffer(id, req.user.userId, dto);
   }
 
   @Patch(':id/shipping')

@@ -5,7 +5,7 @@ import { Item } from '@prisma/client';
 
 @Injectable()
 export class ItemsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(userId: string, createItemDto: CreateItemDto): Promise<Item> {
     const { photos, ...itemData } = createItemDto;
@@ -35,8 +35,15 @@ export class ItemsService {
     ownerId?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ items: any[]; total: number; page: number; limit: number; totalPages: number }> {
-    const { search, category, condition, gender, age, type, city, ownerId } = params;
+  }): Promise<{
+    items: any[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const { search, category, condition, gender, age, type, city, ownerId } =
+      params;
     const page = Math.max(1, params.page || 1);
     const limit = Math.min(100, Math.max(1, params.limit || 15));
 
@@ -85,8 +92,8 @@ export class ItemsService {
 
     if (city) {
       const cityLower = city.toLowerCase();
-      filtered = filtered.filter(
-        (item) => item.owner?.city?.toLowerCase().includes(cityLower),
+      filtered = filtered.filter((item) =>
+        item.owner?.city?.toLowerCase().includes(cityLower),
       );
     }
 
@@ -110,7 +117,9 @@ export class ItemsService {
     const result = paginatedItems.map((item) => {
       const activeExchange =
         item.offeredInExchanges[0] || item.requestedInExchanges[0];
-      const { offeredInExchanges, requestedInExchanges, ...rest } = item;
+      const rest = { ...item } as any;
+      delete rest.offeredInExchanges;
+      delete rest.requestedInExchanges;
       return {
         ...rest,
         exchangeStatus: activeExchange?.status || null,
@@ -130,14 +139,14 @@ export class ItemsService {
         photos: true,
         offeredInExchanges: {
           where: {
-            status: { in: ['ACCEPTED', 'IN_PROGRESS', 'PROPOSED'] },
+            status: { in: ['ACCEPTED', 'IN_PROGRESS'] },
           },
           select: { status: true },
           take: 1,
         },
         requestedInExchanges: {
           where: {
-            status: { in: ['ACCEPTED', 'IN_PROGRESS', 'PROPOSED'] },
+            status: { in: ['ACCEPTED', 'IN_PROGRESS'] },
           },
           select: { status: true },
           take: 1,
@@ -148,7 +157,9 @@ export class ItemsService {
 
     const activeExchange =
       item.offeredInExchanges[0] || item.requestedInExchanges[0];
-    const { offeredInExchanges, requestedInExchanges, ...rest } = item;
+    const rest = { ...item } as any;
+    delete rest.offeredInExchanges;
+    delete rest.requestedInExchanges;
     return {
       ...rest,
       exchangeStatus: activeExchange?.status || null,

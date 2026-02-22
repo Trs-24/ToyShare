@@ -26,6 +26,7 @@ export default function ItemDetailPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [activeProposal, setActiveProposal] = useState<any>(null);
 
   useEffect(() => {
     if (params.id) {
@@ -34,6 +35,21 @@ export default function ItemDetailPage() {
           setItem(itemData);
           setCurrentUser(userData);
           setSelectedPhotoIndex(0);
+
+          if (userData && itemData) {
+            api.exchanges
+              .list()
+              .then((exchanges) => {
+                const proposal = exchanges.find(
+                  (ex: any) =>
+                    ex.itemRequestedId === itemData.id &&
+                    ex.initiatorId === userData.id &&
+                    ex.status === 'PROPOSED',
+                );
+                setActiveProposal(proposal || null);
+              })
+              .catch(console.error);
+          }
 
           if (itemData.category) {
             api.items
@@ -309,7 +325,7 @@ export default function ItemDetailPage() {
                   {!isOwner && currentUser && !isInActiveExchange && (
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="flex-1 px-6 py-4 bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                      className={`flex-1 px-6 py-4 text-white font-bold rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 ${activeProposal ? 'bg-amber-500 hover:bg-amber-600' : 'bg-teal-500 hover:bg-teal-600'}`}
                     >
                       <svg
                         className="w-5 h-5"
@@ -317,14 +333,23 @@ export default function ItemDetailPage() {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                        />
+                        {activeProposal ? (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                          />
+                        ) : (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                          />
+                        )}
                       </svg>
-                      {t('item_proposeExchange')}
+                      {activeProposal ? t('item_changeProposal') : t('item_proposeExchange')}
                     </button>
                   )}
                   {isInActiveExchange && (
@@ -353,17 +378,6 @@ export default function ItemDetailPage() {
                       {t('nav_login')}
                     </Link>
                   )}
-
-                  <button className="w-[60px] h-[60px] rounded-2xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all bg-white shadow-sm hover:shadow-md flex-shrink-0">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
@@ -448,6 +462,7 @@ export default function ItemDetailPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         targetItem={item}
+        existingExchange={activeProposal}
       />
     </>
   );

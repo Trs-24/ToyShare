@@ -190,6 +190,7 @@ const ru: Record<TranslationKeys, string> = {
   item_similarItems: 'Похожие предложения',
   item_notFound: 'Товар не найден',
   item_proposeExchange: '🔄 Предложить обмен',
+  item_changeProposal: 'Изменить предложение',
   item_inExchange: '🔄 Эта вещь в процессе обмена',
   item_lookingFor: 'Ищет взамен',
   item_owner: 'Владелец',
@@ -329,13 +330,17 @@ const ru: Record<TranslationKeys, string> = {
   // === Propose Exchange Modal ===
   propose_title: 'Предложить обмен',
   propose_subtitle: 'Предложить вещь за',
+  propose_editTitle: 'Изменить предложение',
+  propose_editSubtitle: 'Предложить другую вещь за',
   propose_selectItem: 'Выберите вашу вещь:',
   propose_note: 'Сообщение (необязательно)',
   propose_notePlaceholder: 'Привет! Хочу предложить обмен...',
   propose_cancelBtn: 'Отмена',
-  propose_submitBtn: 'Предложить обмен',
+  propose_submitBtn: 'Предложить',
+  propose_saveBtn: 'Сохранить изменения',
   propose_submitting: 'Отправка...',
   propose_success: 'Обмен предложен!',
+  propose_updateSuccess: 'Предложение обновлено!',
   propose_error: 'Не удалось предложить обмен',
 
   // === Ratings ===

@@ -278,6 +278,7 @@ const en: Record<TranslationKeys, string> = {
   exDetail_yourItem: 'Your item',
   exDetail_youOffered: 'You offered',
   exDetail_owner: 'Owner',
+  item_changeProposal: 'Change Proposal',
   exDetail_reject: 'Reject',
   exDetail_acceptExchange: 'Accept Exchange',
   exDetail_cancelRequest: 'Cancel Request',
@@ -330,13 +331,17 @@ const en: Record<TranslationKeys, string> = {
   // === Propose Exchange Modal ===
   propose_title: 'Propose Exchange',
   propose_subtitle: 'Offer an item for',
+  propose_editTitle: 'Change Proposal',
+  propose_editSubtitle: 'Offer a different item for',
   propose_selectItem: 'Select your item:',
   propose_note: 'Message (optional)',
   propose_notePlaceholder: 'Hi! I want to propose an exchange...',
   propose_cancelBtn: 'Cancel',
-  propose_submitBtn: 'Propose Exchange',
+  propose_submitBtn: 'Propose',
+  propose_saveBtn: 'Save Changes',
   propose_submitting: 'Sending...',
   propose_success: 'Exchange proposed!',
+  propose_updateSuccess: 'Proposal updated!',
   propose_error: 'Failed to propose exchange',
 
   // === Ratings ===

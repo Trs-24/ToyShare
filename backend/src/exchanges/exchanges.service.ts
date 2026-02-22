@@ -9,6 +9,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { EmailService } from '../email/email.service';
 import { CreateExchangeDto } from './dto/create-exchange.dto';
 import { UpdateExchangeDto } from './dto/update-exchange.dto';
+import { UpdateOfferDto } from './dto/update-offer.dto';
 import { UpdateShippingDto } from './dto/update-shipping.dto';
 import { CreateRatingDto } from './dto/create-rating.dto';
 
@@ -315,6 +316,77 @@ export class ExchangesService {
       otherUserId,
       `Exchange ${dto.status}`,
       `${actorName} ${dto.status.toLowerCase()} the exchange for ${exchange.itemRequested?.title}`,
+    );
+
+    return updated;
+  }
+
+  /**
+   * Updates the offered item for a PROPOSED exchange.
+   * - Allowed only for the initiator.
+   * - Allowed only in PROPOSED status.
+   */
+  async updateOffer(id: string, userId: string, dto: UpdateOfferDto) {
+    const exchange = await this.prisma.exchange.findUnique({ where: { id } });
+
+    if (!exchange) {
+      throw new NotFoundException('Exchange not found');
+    }
+
+    if (exchange.initiatorId !== userId) {
+      throw new ForbiddenException('You can only update your own proposals');
+    }
+
+    if (exchange.status !== 'PROPOSED') {
+      throw new BadRequestException('Can only update PROPOSED exchanges');
+    }
+
+    // Verify the new offered item belongs to the user and is available
+    if (dto.itemOfferedId) {
+      const newOfferedItem = await this.prisma.item.findUnique({
+        where: { id: dto.itemOfferedId },
+      });
+
+      if (!newOfferedItem || newOfferedItem.ownerId !== userId) {
+        throw new ForbiddenException('You do not own the offered item');
+      }
+
+      // Check if new offered item is not already in an active exchange
+      const activeExchangeForOffered = await this.prisma.exchange.findFirst({
+        where: {
+          id: { not: id }, // exclude this exchange itself
+          OR: [
+            { itemOfferedId: dto.itemOfferedId },
+            { itemRequestedId: dto.itemOfferedId },
+          ],
+          status: { in: ['ACCEPTED', 'IN_PROGRESS'] },
+        },
+      });
+
+      if (activeExchangeForOffered) {
+        throw new BadRequestException(
+          'Your item is already in an active exchange',
+        );
+      }
+    }
+
+    const updated = await this.prisma.exchange.update({
+      where: { id },
+      data: {
+        itemOfferedId: dto.itemOfferedId,
+      },
+      include: {
+        itemOffered: true,
+        itemRequested: true,
+        initiator: { select: { id: true, name: true } },
+      },
+    });
+
+    // Notify the receiver about the changed proposal
+    await this.notificationsService.create(
+      exchange.receiverId,
+      'Пропозиція змінена',
+      `${updated.initiator.name} змінив запропонований товар для обміну на ${updated.itemRequested?.title}`,
     );
 
     return updated;
