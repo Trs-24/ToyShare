@@ -3,24 +3,57 @@
 import Link from 'next/link';
 import { useTranslation } from '@/context/LanguageContext';
 import Navbar from '@/components/Navbar';
+import { useEffect, useRef } from 'react';
+
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const items = el.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
+    );
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, []);
+
+  return ref;
+}
 
 export default function LandingPage() {
   const { t } = useTranslation();
+  const containerRef = useScrollReveal();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white" ref={containerRef}>
       <Navbar />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
+          {/* Ambient glow blobs */}
+          <div className="absolute -top-40 -left-40 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl animate-blob pointer-events-none" />
+          <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl animate-blob animation-delay-2000 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-100/20 rounded-full blur-3xl animate-blob animation-delay-4000 pointer-events-none" />
+
           <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 bg-teal-50/50 text-teal-700 text-sm font-medium mb-6">
-                <span>✨</span> {t('hero_freeHeader')}
+              <div className="reveal reveal-up inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 bg-teal-50/50 text-teal-700 text-sm font-medium mb-6 shadow-sm shadow-teal-100/50">
+                <span className="animate-pulse">✨</span> {t('hero_freeHeader')}
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+              <h1 className="reveal reveal-up delay-100 text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
                 {t('hero_title')
                   .split(' ')
                   .map((word, i, arr) => {
@@ -38,12 +71,14 @@ export default function LandingPage() {
                   })}
               </h1>
 
-              <p className="text-lg text-gray-500 leading-relaxed mb-8">{t('hero_subtitle')}</p>
+              <p className="reveal reveal-up delay-200 text-lg text-gray-500 leading-relaxed mb-8">
+                {t('hero_subtitle')}
+              </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <div className="reveal reveal-up delay-300 flex flex-col sm:flex-row gap-4 mb-12">
                 <Link
                   href="/catalog"
-                  className="inline-flex justify-center items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg"
+                  className="inline-flex justify-center items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-teal-200/50 hover:shadow-xl hover:shadow-teal-300/50 hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {t('hero_startBtn')}
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,42 +92,41 @@ export default function LandingPage() {
                 </Link>
                 <a
                   href="#how-it-works"
-                  className="inline-flex justify-center items-center px-8 py-3.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-all shadow-sm"
+                  className="inline-flex justify-center items-center px-8 py-3.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
                 >
                   {t('hero_howItWorksBtn')}
                 </a>
               </div>
 
-              <div className="flex items-center gap-8 md:gap-12 text-center md:text-left">
-                <div>
-                  <h3 className="text-3xl font-bold text-gray-900">500+</h3>
-                  <p className="text-sm text-gray-500 font-medium">{t('hero_stats_toys')}</p>
-                </div>
-                <div className="w-px h-10 bg-gray-200 hidden md:block"></div>
-                <div>
-                  <h3 className="text-3xl font-bold text-gray-900">200+</h3>
-                  <p className="text-sm text-gray-500 font-medium">{t('hero_stats_families')}</p>
-                </div>
-                <div className="w-px h-10 bg-gray-200 hidden md:block"></div>
-                <div>
-                  <h3 className="text-3xl font-bold text-gray-900">98%</h3>
-                  <p className="text-sm text-gray-500 font-medium">{t('hero_stats_happy')}</p>
-                </div>
+              <div className="reveal reveal-up delay-400 flex items-center gap-8 md:gap-12 text-center md:text-left">
+                {[
+                  { val: '500+', label: t('hero_stats_toys') },
+                  { val: '200+', label: t('hero_stats_families') },
+                  { val: '98%', label: t('hero_stats_happy') },
+                ].map((stat, i) => (
+                  <div key={i} className="flex items-center gap-8 md:gap-12">
+                    {i > 0 && <div className="w-px h-10 bg-gray-200 hidden md:block" />}
+                    <div>
+                      <h3 className="text-3xl font-bold text-gray-900">{stat.val}</h3>
+                      <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Hero Banner Image Placeholder */}
-            <div className="relative w-full h-full flex justify-end">
-              <div className="bg-gradient-to-br from-[#c1eabe] to-[#f4c878] rounded-3xl p-8 shadow-xl relative aspect-[4/3] flex items-center justify-center overflow-hidden w-full max-w-lg transform hover:scale-[1.02] transition-transform duration-500">
+            {/* Hero Banner */}
+            <div className="reveal reveal-scale delay-200 relative w-full h-full flex justify-end">
+              <div className="bg-gradient-to-br from-[#c1eabe] to-[#f4c878] rounded-3xl p-8 shadow-2xl shadow-teal-200/30 relative aspect-[4/3] flex items-center justify-center overflow-hidden w-full max-w-lg transform hover:scale-[1.02] transition-transform duration-500 ring-1 ring-white/30">
                 <div className="absolute inset-x-0 top-0 pt-8 text-center text-3xl font-bold text-[#2a4f15] tracking-wide">
                   ToyShare
                 </div>
-                <div className="text-[120px] filter drop-shadow-xl z-10 leading-none select-none">
+                <div className="text-[120px] filter drop-shadow-xl z-10 leading-none select-none animate-float">
                   🧸🚗
                 </div>
 
                 <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg flex items-center gap-3">
+                  <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg shadow-black/5 flex items-center gap-3 ring-1 ring-white/50">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-100 to-cyan-100 flex items-center justify-center text-xl flex-shrink-0">
                       🎉
                     </div>
@@ -111,10 +145,12 @@ export default function LandingPage() {
         <section id="how-it-works" className="bg-gray-50 py-20 px-4 scroll-mt-20">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
                 {t('how_title')}
               </h2>
-              <p className="text-lg text-gray-500">{t('how_subtitle')}</p>
+              <p className="reveal reveal-up delay-100 text-lg text-gray-500">
+                {t('how_subtitle')}
+              </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -126,18 +162,21 @@ export default function LandingPage() {
               ].map((step, i) => (
                 <div
                   key={i}
-                  className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative overflow-hidden group"
+                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-teal-100/40 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group`}
                 >
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:bg-teal-100 transition-all">
-                      {step.icon}
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-teal-50/0 group-hover:from-teal-50/50 group-hover:to-cyan-50/30 transition-all duration-500 rounded-3xl" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:bg-teal-100 group-hover:shadow-lg group-hover:shadow-teal-100/50 transition-all duration-300">
+                        {step.icon}
+                      </div>
+                      <span className="text-4xl font-black text-gray-200 group-hover:text-teal-200 transition-colors duration-300">
+                        {step.num}
+                      </span>
                     </div>
-                    <span className="text-4xl font-black text-gray-200 group-hover:text-teal-100 transition-colors">
-                      {step.num}
-                    </span>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
+                    <p className="text-gray-500 leading-relaxed text-sm">{step.text}</p>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-500 leading-relaxed text-sm">{step.text}</p>
                 </div>
               ))}
             </div>
@@ -148,24 +187,46 @@ export default function LandingPage() {
         <section className="py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900">
+              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold mb-4 text-gray-900">
                 {t('why_title')}
               </h2>
-              <p className="text-lg text-gray-500">{t('why_subtitle')}</p>
+              <p className="reveal reveal-up delay-100 text-lg text-gray-500">
+                {t('why_subtitle')}
+              </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
               {[
-                { icon: '💰', title: t('why_reason1_title'), text: t('why_reason1_text') },
-                { icon: '🌱', title: t('why_reason2_title'), text: t('why_reason2_text') },
-                { icon: '🤝', title: t('why_reason3_title'), text: t('why_reason3_text') },
-                { icon: '🛡️', title: t('why_reason4_title'), text: t('why_reason4_text') },
+                {
+                  icon: '💰',
+                  title: t('why_reason1_title'),
+                  text: t('why_reason1_text'),
+                  glow: 'hover:shadow-amber-100/60',
+                },
+                {
+                  icon: '🌱',
+                  title: t('why_reason2_title'),
+                  text: t('why_reason2_text'),
+                  glow: 'hover:shadow-emerald-100/60',
+                },
+                {
+                  icon: '🤝',
+                  title: t('why_reason3_title'),
+                  text: t('why_reason3_text'),
+                  glow: 'hover:shadow-blue-100/60',
+                },
+                {
+                  icon: '🛡️',
+                  title: t('why_reason4_title'),
+                  text: t('why_reason4_text'),
+                  glow: 'hover:shadow-purple-100/60',
+                },
               ].map((reason, i) => (
                 <div
                   key={i}
-                  className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex gap-6 items-start hover:shadow-md transition-shadow cursor-default"
+                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex gap-6 items-start hover:shadow-xl ${reason.glow} hover:-translate-y-1 transition-all duration-300 cursor-default group`}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-teal-50 flex-shrink-0 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 rounded-2xl bg-teal-50 flex-shrink-0 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-teal-100/50 transition-all duration-300">
                     {reason.icon}
                   </div>
                   <div>
@@ -177,9 +238,10 @@ export default function LandingPage() {
             </div>
 
             {/* CTA Banner */}
-            <div className="mt-24 max-w-5xl mx-auto bg-gradient-to-r from-teal-500 to-cyan-500 rounded-[40px] p-10 md:p-16 text-center text-white shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl"></div>
-              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl"></div>
+            <div className="reveal reveal-scale mt-24 max-w-5xl mx-auto bg-gradient-to-r from-teal-500 to-cyan-500 rounded-[40px] p-10 md:p-16 text-center text-white shadow-2xl shadow-teal-300/30 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl animate-blob" />
+              <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 rounded-full bg-white opacity-10 blur-2xl animate-blob animation-delay-2000" />
+              <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full bg-white opacity-5 blur-xl animate-blob animation-delay-4000" />
 
               <div className="relative z-10">
                 <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-white">
@@ -190,7 +252,7 @@ export default function LandingPage() {
                 </p>
                 <Link
                   href="/catalog"
-                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-white text-teal-600 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-lg hover:shadow-xl"
+                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-white text-teal-600 font-bold rounded-xl hover:bg-gray-50 transition-all shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {t('cta_btn')}
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,6 +269,77 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
+
+      <style jsx global>{`
+        /* Scroll-reveal base states */
+        .reveal {
+          opacity: 0;
+          transition:
+            opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up {
+          transform: translateY(40px);
+        }
+        .reveal-scale {
+          transform: scale(0.95);
+        }
+        .revealed {
+          opacity: 1 !important;
+          transform: translateY(0) scale(1) !important;
+        }
+
+        /* Staggered delays */
+        .delay-100 {
+          transition-delay: 0.1s;
+        }
+        .delay-200 {
+          transition-delay: 0.2s;
+        }
+        .delay-300 {
+          transition-delay: 0.3s;
+        }
+        .delay-400 {
+          transition-delay: 0.4s;
+        }
+
+        /* Floating animation */
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-12px);
+          }
+        }
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+
+        /* Blob drift animation */
+        @keyframes blob {
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -30px) scale(1.05);
+          }
+          66% {
+            transform: translate(-15px, 20px) scale(0.95);
+          }
+        }
+        .animate-blob {
+          animation: blob 8s ease-in-out infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   );
 }
