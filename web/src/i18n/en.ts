@@ -190,7 +190,7 @@ const en: Record<TranslationKeys, string> = {
   item_viewProfile: 'Profile',
   item_similarItems: 'Similar suggestions',
   item_notFound: 'Item not found',
-  item_proposeExchange: '🔄 Propose Exchange',
+  item_proposeExchange: 'Propose Exchange',
   item_inExchange: '🔄 This item is in an exchange',
   item_lookingFor: 'Looking For',
   item_owner: 'Owner',

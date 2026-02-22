@@ -40,12 +40,18 @@ export default function ItemDetailPage() {
             api.exchanges
               .list()
               .then((exchanges) => {
-                const proposal = exchanges.find(
-                  (ex: any) =>
-                    ex.itemRequestedId === itemData.id &&
-                    ex.initiatorId === userData.id &&
-                    ex.status === 'PROPOSED',
-                );
+                const exchangesList = Array.isArray(exchanges) ? exchanges : [];
+                const proposal = exchangesList.find((ex: any) => {
+                  const targetItemId = String(itemData.id);
+                  const currentUserId = String(userData.id);
+                  return (
+                    (String(ex.itemRequestedId) === targetItemId ||
+                      String(ex.itemRequested?.id) === targetItemId) &&
+                    (String(ex.initiatorId) === currentUserId ||
+                      String(ex.initiator?.id) === currentUserId) &&
+                    ex.status === 'PROPOSED'
+                  );
+                });
                 setActiveProposal(proposal || null);
               })
               .catch(console.error);

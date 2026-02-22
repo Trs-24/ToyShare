@@ -187,7 +187,7 @@ const uk = {
   item_viewProfile: 'Профіль',
   item_similarItems: 'Схожі пропозиції',
   item_notFound: 'Товар не знайдено',
-  item_proposeExchange: '🔄 Предложити обмін',
+  item_proposeExchange: 'Запропонувати обмін',
   item_changeProposal: 'Змінити пропозицію',
   item_inExchange: '🔄 Ця річ в процесі обміну',
   item_lookingFor: 'Шукає взамін',

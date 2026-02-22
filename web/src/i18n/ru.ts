@@ -189,7 +189,7 @@ const ru: Record<TranslationKeys, string> = {
   item_viewProfile: 'Профиль',
   item_similarItems: 'Похожие предложения',
   item_notFound: 'Товар не найден',
-  item_proposeExchange: '🔄 Предложить обмен',
+  item_proposeExchange: 'Предложить обмен',
   item_changeProposal: 'Изменить предложение',
   item_inExchange: '🔄 Эта вещь в процессе обмена',
   item_lookingFor: 'Ищет взамен',
