@@ -20,9 +20,14 @@ const en: Record<TranslationKeys, string> = {
   nav_profile: 'Profile',
   nav_myItems: 'My Items',
   nav_exchanges: 'Exchanges',
+  nav_cabinet: 'My Cabinet',
+  nav_addItem: 'Add Toy',
   nav_logout: 'Logout',
   nav_login: 'Login',
   nav_register: 'Register',
+  cabinet_tab_profile: 'Profile',
+  cabinet_tab_items: 'My Items',
+  cabinet_tab_exchanges: 'Exchanges',
 
   // === Landing Page ===
   hero_title: 'Give Toys a Second Life',

@@ -20,9 +20,14 @@ const ru: Record<TranslationKeys, string> = {
   nav_profile: 'Профиль',
   nav_myItems: 'Мои вещи',
   nav_exchanges: 'Обмены',
+  nav_cabinet: 'Мой кабинет',
+  nav_addItem: 'Добавить игрушку',
   nav_logout: 'Выйти',
   nav_login: 'Войти',
   nav_register: 'Регистрация',
+  cabinet_tab_profile: 'Профиль',
+  cabinet_tab_items: 'Мои товары',
+  cabinet_tab_exchanges: 'Обмены',
 
   // === Landing Page ===
   hero_title: 'Дайте игрушкам вторую жизнь',

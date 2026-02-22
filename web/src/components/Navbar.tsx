@@ -144,19 +144,21 @@ export default function Navbar() {
               <SearchInput />
             </div>
           ) : (
-            <div className="flex-1 hidden md:flex items-center justify-center gap-8">
-              <Link
-                href="/"
-                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
-              >
-                {t('nav_home')}
-              </Link>
+            <div className="flex-1 hidden md:flex items-center gap-6">
               <Link
                 href="/catalog"
-                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
+                className={`text-sm font-medium transition ${pathname === '/catalog' ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600'}`}
               >
                 {t('nav_catalog')}
               </Link>
+              {user && (
+                <Link
+                  href="/profile"
+                  className={`text-sm font-medium transition ${pathname === '/profile' ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600'}`}
+                >
+                  {t('nav_cabinet')}
+                </Link>
+              )}
             </div>
           )}
         </div>
@@ -180,6 +182,22 @@ export default function Navbar() {
 
           {user ? (
             <div className="flex items-center gap-2">
+              {/* Add Toy Button */}
+              <Link
+                href="/profile?tab=items&action=add"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-500 text-white text-sm font-semibold rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                {t('nav_addItem')}
+              </Link>
+
               {/* Notification Bell */}
               <div className="relative" ref={notifRef}>
                 <button
@@ -273,7 +291,7 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* User Menu */}
+              {/* User Avatar Dropdown */}
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => {
@@ -298,7 +316,7 @@ export default function Navbar() {
                   </div>
                 </button>
 
-                {/* Dropdown Menu */}
+                {/* Simplified Dropdown — only Logout + Admin */}
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="px-4 py-3 border-b border-gray-50">
@@ -309,37 +327,26 @@ export default function Navbar() {
                     </div>
 
                     <div className="py-1">
+                      {/* Mobile-only links */}
                       <Link
                         href="/profile"
                         onClick={handleLinkClick}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                        className="md:hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                       >
-                        <span>👤</span> {t('nav_profile')}
+                        <span>👤</span> {t('nav_cabinet')}
                       </Link>
                       <Link
-                        href="/dashboard"
+                        href="/profile?tab=items&action=add"
                         onClick={handleLinkClick}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                        className="sm:hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                       >
-                        <span>🧸</span> {t('nav_myItems')}
-                      </Link>
-                      <Link
-                        href="/exchanges"
-                        onClick={handleLinkClick}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
-                      >
-                        <span>⇄</span> {t('nav_exchanges')}
-                        {unreadCount > 0 && (
-                          <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                            {unreadCount > 99 ? '99+' : unreadCount}
-                          </span>
-                        )}
+                        <span>➕</span> {t('nav_addItem')}
                       </Link>
                       {user.role === 'ADMIN' && (
                         <Link
                           href="/admin"
                           onClick={handleLinkClick}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                          className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
                         >
                           <span>⚙️</span> Адмінка
                         </Link>

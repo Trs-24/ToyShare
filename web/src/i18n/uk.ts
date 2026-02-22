@@ -18,9 +18,14 @@ const uk = {
   nav_profile: 'Профіль',
   nav_myItems: 'Мої речі',
   nav_exchanges: 'Обміни',
+  nav_cabinet: 'Мій кабінет',
+  nav_addItem: 'Додати іграшку',
   nav_logout: 'Вийти',
   nav_login: 'Увійти',
   nav_register: 'Реєстрація',
+  cabinet_tab_profile: 'Профіль',
+  cabinet_tab_items: 'Мої товари',
+  cabinet_tab_exchanges: 'Обміни',
 
   // === Landing Page ===
   hero_title: 'Дайте іграшкам друге життя',
