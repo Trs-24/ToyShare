@@ -157,12 +157,6 @@ export default function Navbar() {
               >
                 {t('nav_catalog')}
               </Link>
-              <Link
-                href="/#how-it-works"
-                className="text-sm font-medium text-gray-600 hover:text-teal-600 transition"
-              >
-                {t('nav_howItWorks')}
-              </Link>
             </div>
           )}
         </div>
