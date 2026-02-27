@@ -17,7 +17,13 @@ async function bootstrap(): Promise<NestExpressApplication> {
     new ExpressAdapter(expressApp),
   );
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  app.enableCors();
+
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  app.enableCors({
+    origin: frontendUrl,
+    credentials: true,
+  });
+
   await app.init();
 
   cachedApp = app;

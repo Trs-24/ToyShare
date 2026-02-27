@@ -2,7 +2,7 @@
  * Shared utility functions for the ToyShare frontend.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { API_BASE } from './api';
 
 /**
  * Resolves a media URL (photo, avatar) to an absolute URL.

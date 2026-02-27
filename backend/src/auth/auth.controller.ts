@@ -49,7 +49,7 @@ export class AuthController {
   async googleAuthCallback(@Request() req, @Res() res: Response) {
     const { access_token } = await this.authService.login(req.user);
     const frontendUrl =
-      this.configService.get('FRONTEND_URL') || 'http://localhost:3001';
+      this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
     res.redirect(`${frontendUrl}/auth/google/callback?token=${access_token}`);
   }
 }

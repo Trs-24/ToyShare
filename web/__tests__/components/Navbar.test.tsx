@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 // Mock next/navigation
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn().mockReturnValue('/'),
   useSearchParams: () => new URLSearchParams(),
 }));
 

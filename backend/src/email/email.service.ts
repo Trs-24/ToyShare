@@ -7,10 +7,13 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
   private readonly logger = new Logger(EmailService.name);
   private readonly fromEmail: string;
+  private readonly frontendUrl: string;
 
   constructor(private configService: ConfigService) {
     this.fromEmail =
       this.configService.get<string>('SMTP_FROM') || 'noreply@toyshare.app';
+    this.frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
 
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('SMTP_HOST'),
@@ -24,9 +27,7 @@ export class EmailService {
   }
 
   async sendVerificationEmail(to: string, token: string): Promise<void> {
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
-    const verifyUrl = `${frontendUrl}/verify-email?token=${token}`;
+    const verifyUrl = `${this.frontendUrl}/verify-email?token=${token}`;
 
     try {
       await this.transporter.sendMail({
@@ -68,7 +69,7 @@ export class EmailService {
             <h2 style="color: #374151;">${title}</h2>
             <p style="color: #374151; font-size: 16px;">${body}</p>
             <div style="text-align: center; margin: 24px 0;">
-              <a href="${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'}/exchanges" style="background: #4f46e5; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+              <a href="${this.frontendUrl}/exchanges" style="background: #4f46e5; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
                 Переглянути обміни
               </a>
             </div>
@@ -97,7 +98,7 @@ export class EmailService {
             <h2 style="color: #374151;">💬 Нове повідомлення</h2>
             <p style="color: #374151; font-size: 16px;"><strong>${senderName}</strong> надіслав вам повідомлення в обміні "${exchangeTitle}".</p>
             <div style="text-align: center; margin: 24px 0;">
-              <a href="${this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000'}/exchanges" style="background: #4f46e5; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+              <a href="${this.frontendUrl}/exchanges" style="background: #4f46e5; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
                 Переглянути повідомлення
               </a>
             </div>

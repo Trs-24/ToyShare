@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from '../email/email.service';
 import { BadRequestException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -13,20 +14,26 @@ describe('AuthService', () => {
   let usersService: {
     findOne: jest.Mock;
     findByGoogleId: jest.Mock;
+    findByEmailToken: jest.Mock;
     update: jest.Mock;
     create: jest.Mock;
   };
   let jwtService: { sign: jest.Mock };
+  let emailService: { sendVerificationEmail: jest.Mock };
 
   beforeEach(async () => {
     usersService = {
       findOne: jest.fn(),
       findByGoogleId: jest.fn(),
+      findByEmailToken: jest.fn(),
       update: jest.fn(),
       create: jest.fn(),
     };
     jwtService = {
       sign: jest.fn().mockImplementation(() => 'mock-jwt-token'),
+    };
+    emailService = {
+      sendVerificationEmail: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +41,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: UsersService, useValue: usersService },
         { provide: JwtService, useValue: jwtService },
+        { provide: EmailService, useValue: emailService },
       ],
     }).compile();
 
@@ -117,10 +125,13 @@ describe('AuthService', () => {
       usersService.create.mockResolvedValue(createdUser);
 
       const result = await service.register(userParam);
-      expect(usersService.create).toHaveBeenCalledWith({
-        ...userParam,
-        password: 'hashedpassword',
-      });
+      expect(usersService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...userParam,
+          password: 'hashedpassword',
+          emailVerifyToken: expect.any(String),
+        }),
+      );
       expect(result).toEqual({ id: 'new-id', email: 'new@test.com' });
     });
 
@@ -211,7 +222,10 @@ describe('AuthService', () => {
       });
 
       const result = await service.validateGoogleUser(googleProfile);
-      expect(usersService.create).toHaveBeenCalledWith(googleProfile);
+      expect(usersService.create).toHaveBeenCalledWith({
+        ...googleProfile,
+        isEmailVerified: true,
+      });
       expect(result).toEqual({ id: 'u3', ...googleProfile });
     });
   });

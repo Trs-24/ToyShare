@@ -18,7 +18,7 @@ import { GoogleStrategy } from './google.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET') || 'SECRET_KEY_MVP',
+        secret: configService.getOrThrow('JWT_SECRET'),
         signOptions: { expiresIn: '7d' },
       }),
     }),
@@ -27,4 +27,4 @@ import { GoogleStrategy } from './google.strategy';
   providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

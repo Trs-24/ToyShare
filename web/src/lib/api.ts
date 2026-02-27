@@ -1,20 +1,41 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '');
 
 async function request(url: string, options: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  const res = await fetch(`${API_BASE}${url}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || 'API Error');
+  const fullUrl = `${API_BASE}${url}`;
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[API Request] ${options.method || 'GET'} ${fullUrl}`);
   }
-  return res.json();
+
+  try {
+    const res = await fetch(fullUrl, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: res.statusText }));
+      throw new Error(error.message || 'API Error');
+    }
+    return res.json();
+  } catch (error: any) {
+    if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      console.error(
+        `[API Error] Failed to fetch from ${fullUrl}. Check if NEXT_PUBLIC_API_URL is set correctly.`,
+      );
+      throw new Error(
+        `Failed to connect to the server. Please check your internet connection or try again later.`,
+      );
+    }
+    throw error;
+  }
 }
 
 export const api = {
