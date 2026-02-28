@@ -35,11 +35,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-teal-600 hover:text-teal-800 font-medium mb-6"
+          className="inline-flex items-center text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium mb-6"
         >
           {t('login_backToHome')}
         </Link>
@@ -47,14 +47,14 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-emerald-600 bg-clip-text text-transparent">
             🧸 ToyShare
           </h1>
-          <p className="text-gray-500 mt-2">{t('login_title')}</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">{t('login_title')}</p>
         </div>
-        <div className="card p-8 space-y-5">
+        <div className="card p-8 space-y-5 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md">
           {/* Google Sign-In button */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:border-gray-300 transition-all font-medium text-gray-700 shadow-sm"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 dark:border-gray-700/50 rounded-xl bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all font-medium text-gray-700 dark:text-gray-200 shadow-sm"
           >
             <svg width="20" height="20" viewBox="0 0 48 48">
               <path
@@ -83,7 +83,9 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-400">{t('google_or')}</span>
+              <span className="px-4 bg-transparent text-gray-500 dark:text-gray-400 font-medium">
+                {t('google_or')}
+              </span>
             </div>
           </div>
 
@@ -91,7 +93,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t('login_email')}
               </label>
               <input
@@ -104,7 +106,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t('login_password')}
               </label>
               <input
@@ -120,9 +122,12 @@ export default function LoginPage() {
               {loading ? t('login_submitting') : t('login_submit')}
             </button>
           </form>
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             {t('login_noAccount')}{' '}
-            <Link href="/register" className="text-teal-600 hover:text-teal-800 font-medium">
+            <Link
+              href="/register"
+              className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium"
+            >
               {t('login_registerLink')}
             </Link>
           </p>

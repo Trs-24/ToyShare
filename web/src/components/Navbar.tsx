@@ -8,6 +8,7 @@ import { getMediaUrl } from '@/lib/utils';
 import type { Locale } from '@/i18n';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
+import { ThemeToggle } from '@/components/ThemeToggle'; // Added this import
 
 const LANG_OPTIONS: { value: Locale; flag: string }[] = [
   { value: 'uk', flag: '🇺🇦' },
@@ -35,6 +36,7 @@ export default function Navbar() {
   const [notifLoading, setNotifLoading] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false); // Added this state
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -50,6 +52,15 @@ export default function Navbar() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  // Navbar scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Poll unread notifications count
@@ -129,50 +140,78 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm bg-white/90">
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800'
+          : 'bg-transparent'
+      }`}
+    >
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6 flex-1 max-w-2xl mr-4">
-          <Link
-            href="/"
-            className="text-xl font-bold bg-gradient-to-r from-teal-500 to-emerald-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex-shrink-0"
-          >
-            🧸 ToyShare
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="p-2 bg-teal-50 dark:bg-teal-900/30 rounded-xl group-hover:bg-teal-100 dark:group-hover:bg-teal-800/50 transition-colors">
+              <svg
+                className="w-6 h-6 text-teal-600 dark:text-teal-400"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+              </svg>
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-400 dark:to-emerald-400 bg-clip-text text-transparent">
+              ToyShare
+            </span>
           </Link>
 
-          {pathname === '/catalog' ? (
-            <div className="flex-1 max-w-md hidden md:block relative">
-              <SearchInput />
-            </div>
-          ) : (
-            <div className="flex-1 hidden md:flex items-center gap-6">
+          {/* Navigation Links - Always Visible */}
+          <div className="flex-1 hidden md:flex items-center gap-6">
+            <Link
+              href="/catalog"
+              className={`text-sm font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
+                pathname === '/catalog'
+                  ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+              }`}
+            >
+              {t('nav_catalog')}
+            </Link>
+            {user && (
               <Link
-                href="/catalog"
-                className={`text-sm font-medium transition ${pathname === '/catalog' ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600'}`}
+                href="/profile"
+                className={`text-sm font-semibold px-4 py-2 rounded-full transition-all duration-300 ${
+                  pathname === '/profile'
+                    ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                }`}
               >
-                {t('nav_catalog')}
+                {t('nav_cabinet')}
               </Link>
-              {user && (
-                <Link
-                  href="/profile"
-                  className={`text-sm font-medium transition ${pathname === '/profile' ? 'text-teal-600' : 'text-gray-600 hover:text-teal-600'}`}
-                >
-                  {t('nav_cabinet')}
-                </Link>
-              )}
+            )}
+          </div>
+
+          {/* Search Input - Only Visible on Catalog */}
+          {pathname === '/catalog' && (
+            <div className="flex-1 max-w-md hidden md:block relative ml-4">
+              <SearchInput />
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
+
           {/* Language Switcher */}
-          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+          <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
             {LANG_OPTIONS.map((lang) => (
               <button
                 key={lang.value}
                 onClick={() => setLocale(lang.value)}
-                className={`px-2 py-1 text-sm rounded-md transition-all ${
-                  locale === lang.value ? 'bg-white shadow-sm font-medium' : 'hover:bg-gray-200/50'
-                }`}
+                className={`px - 2 py - 1 text - sm rounded - md transition - all ${
+                  locale === lang.value
+                    ? 'bg-white dark:bg-gray-700 shadow-sm font-medium dark:text-white'
+                    : 'hover:bg-gray-200/50 dark:hover:bg-gray-700/50 text-gray-500 dark:text-gray-400'
+                } `}
                 title={lang.value.toUpperCase()}
               >
                 {lang.flag}
@@ -185,7 +224,7 @@ export default function Navbar() {
               {/* Add Toy Button */}
               <Link
                 href="/profile?tab=items&action=add"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-500 text-white text-sm font-semibold rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white text-sm font-semibold rounded-xl hover:-translate-y-0.5 transition-all duration-300 shadow-md hover:shadow-teal-500/30"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -202,7 +241,7 @@ export default function Navbar() {
               <div className="relative" ref={notifRef}>
                 <button
                   onClick={openNotifications}
-                  className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:rotate-12"
                   title={t('notif_title')}
                 >
                   <svg
@@ -257,21 +296,21 @@ export default function Navbar() {
                             onClick={() => {
                               if (!notif.isRead) markOneRead(notif.id);
                               setIsNotifOpen(false);
-                              router.push('/exchanges');
+                              router.push('/profile?tab=exchanges');
                             }}
-                            className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-gray-50 transition-colors ${
+                            className={`w - full text - left px - 4 py - 3 border - b border - gray - 50 hover: bg - gray - 50 transition - colors ${
                               !notif.isRead ? 'bg-teal-50/50' : ''
-                            }`}
+                            } `}
                           >
                             <div className="flex items-start gap-3">
                               <div
-                                className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+                                className={`mt - 1 w - 2 h - 2 rounded - full flex - shrink - 0 ${
                                   !notif.isRead ? 'bg-teal-500' : 'bg-transparent'
-                                }`}
+                                } `}
                               />
                               <div className="flex-1 min-w-0">
                                 <p
-                                  className={`text-sm ${!notif.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'}`}
+                                  className={`text - sm ${!notif.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'} `}
                                 >
                                   {notif.title}
                                 </p>
@@ -373,13 +412,13 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900 transition px-3 py-2 rounded-lg hover:bg-gray-50"
+                className="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-gray-100"
               >
                 {t('nav_login')}
               </Link>
               <Link
                 href="/register"
-                className="text-sm font-medium bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition shadow-sm hover:shadow-md"
+                className="text-sm font-semibold bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white px-5 py-2 rounded-xl transition-all duration-300 shadow-md hover:shadow-teal-500/30 hover:-translate-y-0.5"
               >
                 {t('nav_register')}
               </Link>
@@ -411,7 +450,7 @@ function SearchInput() {
     } else {
       currentParams.delete('search');
     }
-    router.push(`/catalog?${currentParams.toString()}`);
+    router.push(`/ catalog ? ${currentParams.toString()} `);
   };
 
   return (

@@ -36,23 +36,26 @@ export default function LandingPage() {
   const containerRef = useScrollReveal();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white" ref={containerRef}>
+    <div className="min-h-screen flex flex-col bg-transparent" ref={containerRef}>
       <Navbar />
 
       <main className="flex-1">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
           {/* Ambient glow — lightweight colored circles */}
-          <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-teal-100/30 rounded-full pointer-events-none" />
-          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-cyan-100/20 rounded-full pointer-events-none" />
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-teal-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow pointer-events-none" />
+          <div
+            className="absolute top-40 -right-40 w-[600px] h-[600px] bg-emerald-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow pointer-events-none"
+            style={{ animationDelay: '2s' }}
+          />
 
           <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="max-w-xl">
-              <div className="reveal reveal-up inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 bg-teal-50/50 text-teal-700 text-sm font-medium mb-6 shadow-sm shadow-teal-100/50">
+              <div className="reveal reveal-up inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium mb-6 shadow-sm shadow-teal-100/50">
                 <span className="animate-pulse">✨</span> {t('hero_freeHeader')}
               </div>
 
-              <h1 className="reveal reveal-up delay-100 text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+              <h1 className="reveal reveal-up delay-100 text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6">
                 {t('hero_title')
                   .split(' ')
                   .map((word, i, arr) => {
@@ -70,17 +73,22 @@ export default function LandingPage() {
                   })}
               </h1>
 
-              <p className="reveal reveal-up delay-200 text-lg text-gray-500 leading-relaxed mb-8">
+              <p className="reveal reveal-up delay-200 text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-8">
                 {t('hero_subtitle')}
               </p>
 
               <div className="reveal reveal-up delay-300 flex flex-col sm:flex-row gap-4 mb-12">
                 <Link
                   href="/catalog"
-                  className="inline-flex justify-center items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white font-semibold rounded-xl transition-[transform,box-shadow] duration-300 shadow-lg shadow-teal-200/50 hover:shadow-xl hover:shadow-teal-300/50 hover:-translate-y-0.5 active:translate-y-0"
+                  className="inline-flex justify-center items-center gap-2 btn-primary"
                 >
                   {t('hero_startBtn')}
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -91,7 +99,7 @@ export default function LandingPage() {
                 </Link>
                 <a
                   href="#how-it-works"
-                  className="inline-flex justify-center items-center px-8 py-3.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-[transform,box-shadow] duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                  className="inline-flex justify-center items-center btn-secondary"
                 >
                   {t('hero_howItWorksBtn')}
                 </a>
@@ -106,8 +114,12 @@ export default function LandingPage() {
                   <div key={i} className="flex items-center gap-8 md:gap-12">
                     {i > 0 && <div className="w-px h-10 bg-gray-200 hidden md:block" />}
                     <div>
-                      <h3 className="text-3xl font-bold text-gray-900">{stat.val}</h3>
-                      <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
+                      <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        {stat.val}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                        {stat.label}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -139,13 +151,16 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how-it-works" className="bg-gray-50 py-20 px-4 scroll-mt-20">
+        <section
+          id="how-it-works"
+          className="bg-gray-50 dark:bg-slate-900/20 py-20 px-4 scroll-mt-20"
+        >
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
                 {t('how_title')}
               </h2>
-              <p className="reveal reveal-up delay-100 text-lg text-gray-500">
+              <p className="reveal reveal-up delay-100 text-lg text-gray-500 dark:text-gray-400">
                 {t('how_subtitle')}
               </p>
             </div>
@@ -159,20 +174,24 @@ export default function LandingPage() {
               ].map((step, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-300 relative overflow-hidden group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white/60 dark:bg-slate-900/40 backdrop-blur-md p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow,border-color,background-color] duration-300 relative overflow-hidden group`}
                 >
-                  <div className="absolute inset-0 bg-teal-50/0 group-hover:bg-teal-50/40 transition-colors duration-300 rounded-3xl" />
+                  <div className="absolute inset-0 bg-teal-50/0 dark:bg-teal-900/0 group-hover:bg-teal-50/40 dark:group-hover:bg-teal-900/40 transition-colors duration-300 rounded-3xl" />
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:bg-teal-100 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:bg-teal-100 dark:group-hover:bg-teal-800/50 transition-transform duration-300">
                         {step.icon}
                       </div>
                       <span className="text-4xl font-black text-gray-200 group-hover:text-teal-200 transition-color duration-200">
                         {step.num}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                    <p className="text-gray-500 leading-relaxed text-sm">{step.text}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-sm">
+                      {step.text}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -184,10 +203,10 @@ export default function LandingPage() {
         <section className="py-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold mb-4 text-gray-900">
+              <h2 className="reveal reveal-up text-3xl md:text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">
                 {t('why_title')}
               </h2>
-              <p className="reveal reveal-up delay-100 text-lg text-gray-500">
+              <p className="reveal reveal-up delay-100 text-lg text-gray-500 dark:text-gray-400">
                 {t('why_subtitle')}
               </p>
             </div>
@@ -221,14 +240,18 @@ export default function LandingPage() {
               ].map((reason, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex gap-6 items-start hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-300 cursor-default group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white/60 dark:bg-slate-900/40 backdrop-blur-md p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex gap-6 items-start hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow,border-color,background-color] duration-300 cursor-default group`}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-teal-50 flex-shrink-0 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-900/30 flex-shrink-0 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
                     {reason.icon}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{reason.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{reason.text}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      {reason.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                      {reason.text}
+                    </p>
                   </div>
                 </div>
               ))}

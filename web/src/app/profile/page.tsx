@@ -19,6 +19,7 @@ import {
   getTypeLabel,
   getCategoryLabel,
 } from '@/constants/itemOptions';
+import ExchangesTab from '@/components/profile/ExchangesTab';
 
 type TabType = 'profile' | 'items' | 'exchanges';
 
@@ -106,18 +107,16 @@ function CabinetPage() {
     }
   }, [user]);
 
-  // Load items when items tab is active
+  // Load items immediately to display the correct count in the profile header on all tabs
   useEffect(() => {
-    if (user && activeTab === 'items') {
+    if (user) {
       fetchItems();
     }
-  }, [user, activeTab]);
+  }, [user]);
 
-  // Redirect to exchanges page when exchanges tab
+  // No longer redirecting, Exchanges will render in the tab
   useEffect(() => {
-    if (activeTab === 'exchanges') {
-      router.push('/exchanges');
-    }
+    // Keep this effect empty if needed or remove it
   }, [activeTab]);
 
   const fetchProfile = async () => {
@@ -360,15 +359,18 @@ function CabinetPage() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-1 bg-gray-100 rounded-2xl p-1.5 mb-8">
+        <div
+          className="flex gap-2 bg-white/50 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl p-1.5 mb-8 border border-gray-100/50 dark:border-gray-800 shadow-sm animate-fade-in-up"
+          style={{ animationDelay: '100ms' }}
+        >
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => switchTab(tab.key)}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-300 ${
                 activeTab === tab.key
-                  ? 'bg-white text-teal-600 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-md transform scale-[1.02]'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-white/60 dark:hover:bg-slate-800/60'
               }`}
             >
               <span>{tab.icon}</span>
@@ -379,61 +381,65 @@ function CabinetPage() {
 
         {/* === PROFILE TAB === */}
         {activeTab === 'profile' && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
+          <div
+            className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md rounded-3xl border border-white/60 dark:border-gray-800 shadow-md p-6 md:p-8 animate-fade-in-up"
+            style={{ animationDelay: '200ms' }}
+          >
             {!isEditing ? (
               <div className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {t('profile_name')}
                     </label>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {profile?.name || t('notSpecified')}
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {t('profile_email')}
                     </label>
-                    <p className="text-lg font-semibold text-gray-900">{profile?.email}</p>
+                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {profile?.email}
+                    </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {t('profile_phone')}
                     </label>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {profile?.phone || t('notSpecified')}
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                       {t('profile_city')}
                     </label>
-                    <p className="text-lg font-semibold text-gray-900">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {profile?.city || t('notSpecified')}
                     </p>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-gray-100">
+                <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
                   <label className="flex items-center gap-3 cursor-default">
                     <input
                       type="checkbox"
-                      checked={profile?.emailNotifications}
+                      checked={!!profile?.emailNotifications}
                       readOnly
-                      className="w-5 h-5 rounded border-gray-300 text-teal-500 focus:ring-teal-500"
+                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-teal-500 focus:ring-teal-500"
                     />
                     <div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {t('profile_emailNotifications')}
                       </span>
-                      <p className="text-xs text-gray-500">{t('profile_emailNotificationsDesc')}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {t('profile_emailNotificationsDesc')}
+                      </p>
                     </div>
                   </label>
                 </div>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-6 py-3 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 transition-colors shadow-sm"
-                >
+                <button onClick={() => setIsEditing(true)} className="btn-primary mt-6">
                   {t('profile_editBtn')}
                 </button>
               </div>
@@ -441,7 +447,7 @@ function CabinetPage() {
               <form onSubmit={handleProfileUpdate} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                       {t('profile_name')}
                     </label>
                     <input
@@ -452,7 +458,7 @@ function CabinetPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                       {t('register_phone')}
                     </label>
                     <input
@@ -463,7 +469,7 @@ function CabinetPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                       {t('register_city')}
                     </label>
                     <input
@@ -474,7 +480,7 @@ function CabinetPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                       {t('register_defaultPostOffice')}
                     </label>
                     <input
@@ -487,7 +493,7 @@ function CabinetPage() {
                     />
                   </div>
                 </div>
-                <div className="pt-4 border-t border-gray-100">
+                <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
@@ -495,10 +501,10 @@ function CabinetPage() {
                       onChange={(e) =>
                         setProfileForm({ ...profileForm, emailNotifications: e.target.checked })
                       }
-                      className="w-5 h-5 rounded border-gray-300 text-teal-500 focus:ring-teal-500"
+                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-teal-500 focus:ring-teal-500"
                     />
                     <div>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {t('profile_emailNotifications')}
                       </span>
                       <p className="text-xs text-gray-500">{t('profile_emailNotificationsDesc')}</p>
@@ -515,7 +521,7 @@ function CabinetPage() {
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+                    className="px-6 py-3 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                   >
                     {t('profile_cancelBtn')}
                   </button>
@@ -530,8 +536,8 @@ function CabinetPage() {
           <div>
             {/* Add/Edit Item Form */}
             {showItemForm && (
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+              <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 mb-8 backdrop-blur-md">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                   {editingId ? t('dash_editItem') : t('nav_addItem')}
                 </h2>
                 <form onSubmit={handleItemSubmit} className="space-y-5">
@@ -552,7 +558,7 @@ function CabinetPage() {
                   />
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {t('dash_conditionLabel')}
                       </label>
                       <select
@@ -568,7 +574,7 @@ function CabinetPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {t('dash_categoryLabel')}
                       </label>
                       <select
@@ -586,7 +592,7 @@ function CabinetPage() {
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {t('dash_genderLabel')}
                       </label>
                       <select
@@ -602,7 +608,7 @@ function CabinetPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {t('dash_ageLabel')}
                       </label>
                       <select
@@ -618,7 +624,7 @@ function CabinetPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                         {t('dash_typeLabel')}
                       </label>
                       <select
@@ -642,7 +648,7 @@ function CabinetPage() {
                   />
                   {/* Photos */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('dash_photos')}
                     </label>
                     <div className="flex flex-wrap gap-4">
@@ -665,8 +671,8 @@ function CabinetPage() {
                           </button>
                         </div>
                       ))}
-                      <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-teal-500 transition">
-                        <span className="text-2xl text-gray-400">+</span>
+                      <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:border-teal-500 dark:hover:border-teal-400 transition bg-white dark:bg-slate-800">
+                        <span className="text-2xl text-gray-400 dark:text-gray-500">+</span>
                         <input
                           type="file"
                           className="hidden"
@@ -690,7 +696,7 @@ function CabinetPage() {
                         setEditingId(null);
                         resetItemForm();
                       }}
-                      className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+                      className="px-6 py-3 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                     >
                       {t('profile_cancelBtn')}
                     </button>
@@ -729,7 +735,7 @@ function CabinetPage() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
               </div>
             ) : items.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
+              <div className="text-center py-16 text-gray-400 dark:text-gray-500">
                 <p className="text-5xl mb-4">📦</p>
                 <p className="text-lg">{t('dash_noItems')}</p>
               </div>
@@ -738,11 +744,11 @@ function CabinetPage() {
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
+                    className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-md"
                   >
                     {/* Photo */}
                     <Link href={`/items/${item.id}`} className="block">
-                      <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
+                      <div className="aspect-[4/3] bg-gray-50 dark:bg-slate-800 relative overflow-hidden">
                         {item.photos?.[0] ? (
                           <img
                             src={getMediaUrl(item.photos[0].url)}
@@ -783,34 +789,38 @@ function CabinetPage() {
 
                     {/* Info */}
                     <div className="p-4">
-                      <h3 className="font-bold text-gray-900 line-clamp-1 mb-1">{item.title}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-1 mb-3">{item.description}</p>
+                      <h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 mb-1">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1 mb-3">
+                        {item.description}
+                      </p>
                       <div className="flex flex-wrap gap-1.5 mb-4">
-                        <span className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 text-[11px] font-medium">
+                        <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[11px] font-medium border border-transparent dark:border-gray-700">
                           {getConditionLabel(t, item.condition)}
                         </span>
                         {item.category && (
-                          <span className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 text-[11px] font-medium">
+                          <span className="px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[11px] font-medium border border-transparent dark:border-teal-800">
                             {getCategoryLabel(t, item.category)}
                           </span>
                         )}
                         {item.age && (
-                          <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[11px] font-medium">
+                          <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-[11px] font-medium border border-transparent dark:border-amber-800">
                             {getAgeLabel(t, item.age)}
                           </span>
                         )}
                       </div>
                       {/* Action buttons */}
-                      <div className="flex gap-2 pt-3 border-t border-gray-100">
+                      <div className="flex gap-2 pt-3 border-t border-gray-100 dark:border-gray-800">
                         <button
                           onClick={() => handleEditItem(item)}
-                          className="flex-1 px-3 py-2 text-sm font-semibold text-teal-600 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors"
+                          className="flex-1 px-3 py-2 text-sm font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 rounded-xl hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-transparent dark:border-teal-800/50"
                         >
                           {t('dash_editItem')}
                         </button>
                         <button
                           onClick={() => handleDeleteItem(item.id)}
-                          className="flex-1 px-3 py-2 text-sm font-semibold text-red-600 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
+                          className="flex-1 px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-transparent dark:border-red-800/50"
                         >
                           {t('dash_deleteItem')}
                         </button>
@@ -822,6 +832,9 @@ function CabinetPage() {
             )}
           </div>
         )}
+
+        {/* === EXCHANGES TAB === */}
+        {activeTab === 'exchanges' && <ExchangesTab />}
       </main>
     </>
   );

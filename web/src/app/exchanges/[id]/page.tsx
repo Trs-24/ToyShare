@@ -73,7 +73,7 @@ export default function ExchangeDetailPage() {
     try {
       await api.exchanges.updateStatus(id as string, status);
       if (status === 'REJECTED') {
-        router.push('/exchanges');
+        router.push('/profile?tab=exchanges');
       } else {
         await loadData();
       }
@@ -90,7 +90,7 @@ export default function ExchangeDetailPage() {
     setError(null);
     try {
       await api.exchanges.cancel(id as string);
-      router.push('/exchanges');
+      router.push('/profile?tab=exchanges');
     } catch (e: any) {
       console.error('Exchange cancel failed:', e);
       setError(e?.message || t('exDetail_cancelError'));
@@ -165,7 +165,7 @@ export default function ExchangeDetailPage() {
       <div className="max-w-3xl mx-auto p-6 pb-12">
         {/* Back Link */}
         <Link
-          href="/exchanges"
+          href="/profile?tab=exchanges"
           className="inline-flex items-center text-gray-500 hover:text-gray-700 font-medium mb-6 transition-colors"
         >
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

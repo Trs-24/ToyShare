@@ -121,7 +121,7 @@ function HomeContent() {
     <>
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">
+        <h1 className="text-3xl font-bold mb-8 animate-fade-in-up">
           {filters.ownerName
             ? t('catalog_userItems').replace('{name}', filters.ownerName)
             : t('catalog_title')}
@@ -129,12 +129,15 @@ function HomeContent() {
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
-          <aside className="w-full md:w-64 space-y-5 flex-shrink-0">
+          <aside
+            className="w-full md:w-64 space-y-5 flex-shrink-0 animate-fade-in-up"
+            style={{ animationDelay: '100ms' }}
+          >
             {/* Search input removed from here, moved to Navbar */}
 
             {/* City Filter */}
             <div className="pt-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_city')}
               </label>
               <input
@@ -147,7 +150,7 @@ function HomeContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_category')}
               </label>
               <select
@@ -167,7 +170,7 @@ function HomeContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_condition')}
               </label>
               <select
@@ -185,7 +188,7 @@ function HomeContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_gender')}
               </label>
               <select
@@ -205,7 +208,7 @@ function HomeContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_age')}
               </label>
               <select
@@ -225,7 +228,7 @@ function HomeContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_type')}
               </label>
               <select
@@ -246,19 +249,20 @@ function HomeContent() {
 
             <button
               onClick={() => router.push('/catalog')}
-              className="text-sm text-teal-600 hover:text-teal-800"
+              className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors"
             >
               {t('catalog_resetFilters')}
             </button>
           </aside>
 
           {/* Items Grid */}
-          <div className="flex-1">
+          <div className="flex-1 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             {/* Top bar: total count + per-page selector */}
             {!loading && items.length > 0 && (
               <div className="flex items-center justify-between mb-6">
-                <p className="text-sm text-gray-500">
-                  {t('catalog_found')}: <span className="font-semibold text-gray-700">{total}</span>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {t('catalog_found')}:{' '}
+                  <span className="font-semibold text-gray-700 dark:text-gray-200">{total}</span>
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-500">{t('catalog_perPage')}:</span>
@@ -270,7 +274,7 @@ function HomeContent() {
                         className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                           limit === opt
                             ? 'bg-teal-500 text-white'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                            : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'
                         }`}
                       >
                         {opt}
@@ -299,7 +303,7 @@ function HomeContent() {
                       href={`/items/${item.id}`}
                       className="card group hover:shadow-lg transition"
                     >
-                      <div className="aspect-square bg-gray-100 relative overflow-hidden rounded-t-xl">
+                      <div className="aspect-square bg-gray-100 dark:bg-slate-800 relative overflow-hidden rounded-t-xl">
                         {item.photos?.[0] ? (
                           <img
                             src={getMediaUrl(item.photos[0].url)}
@@ -321,16 +325,18 @@ function HomeContent() {
                         {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) && (
                           <div className="absolute bottom-2 left-2 right-2">
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600/90 text-white text-xs font-medium backdrop-blur-sm shadow">
-                              {t('catalog_inExchange')}
+                              <span className="animate-pulse">✨</span> {t('catalog_inExchange')}
                             </span>
                           </div>
                         )}
                       </div>
                       <div className="p-4">
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900 line-clamp-1">{item.title}</h3>
+                          <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1">
+                            {item.title}
+                          </h3>
                         </div>
-                        <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
                           {item.description}
                         </p>
 
@@ -350,7 +356,7 @@ function HomeContent() {
                     <button
                       onClick={() => setPage(Math.max(1, page - 1))}
                       disabled={page === 1}
-                      className="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 text-gray-600"
+                      className="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-400"
                     >
                       ←
                     </button>
@@ -366,7 +372,7 @@ function HomeContent() {
                           className={`w-10 h-10 rounded-lg text-sm font-medium transition-all ${
                             page === p
                               ? 'bg-teal-500 text-white shadow-sm'
-                              : 'text-gray-600 hover:bg-gray-100'
+                              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800'
                           }`}
                         >
                           {p}
@@ -376,7 +382,7 @@ function HomeContent() {
                     <button
                       onClick={() => setPage(Math.min(totalPages, page + 1))}
                       disabled={page === totalPages}
-                      className="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 text-gray-600"
+                      className="px-3 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-400"
                     >
                       →
                     </button>

@@ -90,11 +90,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
       <div className="w-full max-w-md">
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-teal-600 hover:text-teal-800 font-medium mb-6"
+          className="inline-flex items-center text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium mb-6"
         >
           {t('register_backToHome')}
         </Link>
@@ -102,7 +102,7 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-500 to-emerald-600 bg-clip-text text-transparent">
             🧸 ToyShare
           </h1>
-          <p className="text-gray-500 mt-2">{t('register_title')}</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">{t('register_title')}</p>
         </div>
 
         {/* Progress indicator */}
@@ -111,31 +111,39 @@ export default function RegisterPage() {
             <div key={s} className="flex items-center gap-2">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                  step >= s ? 'bg-teal-500 text-white shadow-md' : 'bg-gray-200 text-gray-400'
+                  step >= s
+                    ? 'bg-teal-500 text-white shadow-md'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
                 }`}
               >
                 {s}
               </div>
               <span
-                className={`text-sm hidden sm:inline ${step >= s ? 'text-teal-600 font-medium' : 'text-gray-400'}`}
+                className={`text-sm hidden sm:inline ${
+                  step >= s
+                    ? 'text-teal-600 dark:text-teal-400 font-medium'
+                    : 'text-gray-400 dark:text-gray-500'
+                }`}
               >
                 {s === 1 ? t('register_step1') : t('register_step2')}
               </span>
               {s < STEPS.length && (
-                <div className={`w-8 h-0.5 ${step > s ? 'bg-teal-500' : 'bg-gray-200'}`} />
+                <div
+                  className={`w-8 h-0.5 ${step > s ? 'bg-teal-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+                />
               )}
             </div>
           ))}
         </div>
 
-        <div className="card p-8 space-y-5">
+        <div className="card p-8 space-y-5 bg-white/80 dark:bg-slate-900/60 backdrop-blur-md">
           {step === 1 && (
             <>
               {/* Google Sign-Up button */}
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl bg-white hover:bg-gray-50 hover:border-gray-300 transition-all font-medium text-gray-700 shadow-sm"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 dark:border-gray-700/50 rounded-xl bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all font-medium text-gray-700 dark:text-gray-200 shadow-sm"
               >
                 <svg width="20" height="20" viewBox="0 0 48 48">
                   <path
@@ -164,7 +172,9 @@ export default function RegisterPage() {
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-white text-gray-400">{t('google_or')}</span>
+                  <span className="px-4 bg-transparent text-gray-500 dark:text-gray-400 font-medium">
+                    {t('google_or')}
+                  </span>
                 </div>
               </div>
 
@@ -180,7 +190,7 @@ export default function RegisterPage() {
                   <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
                 )}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t('register_name')} *
                   </label>
                   <input
@@ -193,7 +203,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t('register_email')} *
                   </label>
                   <input
@@ -206,7 +216,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     {t('register_password')} *
                   </label>
                   <input
@@ -232,12 +242,12 @@ export default function RegisterPage() {
                 <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">{error}</div>
               )}
 
-              <div className="bg-teal-50 text-teal-700 text-sm p-3 rounded-xl">
+              <div className="bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm p-3 rounded-xl border border-teal-100 dark:border-teal-800">
                 📦 {t('register_shippingHint')}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t('register_phone')} *
                 </label>
                 <input
@@ -250,7 +260,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t('register_country')}
                 </label>
                 <input
@@ -262,7 +272,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t('register_city')}
                 </label>
                 <input
@@ -274,7 +284,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   {t('register_defaultPostOffice')}
                 </label>
                 <input
@@ -297,9 +307,12 @@ export default function RegisterPage() {
             </form>
           )}
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             {t('register_hasAccount')}{' '}
-            <Link href="/login" className="text-teal-600 hover:text-teal-800 font-medium">
+            <Link
+              href="/login"
+              className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium"
+            >
               {t('register_loginLink')}
             </Link>
           </p>

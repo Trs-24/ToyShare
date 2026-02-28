@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
 import { useTranslation } from '@/context/LanguageContext';
 import { getMediaUrl, getStatusColor, getDateLocale } from '@/lib/utils';
 import { Exchange } from '@/lib/types';
@@ -18,7 +17,7 @@ const STATUSES = [
   'CANCELLED',
 ];
 
-export default function ExchangesPage() {
+export default function ExchangesTab() {
   const { t, locale } = useTranslation();
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +71,7 @@ export default function ExchangesPage() {
 
     return (
       <Link href={`/exchanges/${exchange.id}`} className="block">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900/60 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow backdrop-blur-md">
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-2">
               <span
@@ -80,7 +79,7 @@ export default function ExchangesPage() {
               >
                 {statusLabel(exchange.status)}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-400 dark:text-gray-500">
                 {new Date(exchange.createdAt).toLocaleDateString(dateLocale)}
               </span>
             </div>
@@ -91,9 +90,11 @@ export default function ExchangesPage() {
 
           <div className="flex items-center gap-4">
             <div className="flex-1">
-              <p className="text-sm text-gray-500 mb-1">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                 {isIncoming ? t('exchanges_from') : t('exchanges_to')}{' '}
-                <span className="font-medium text-gray-900">{otherUser.name}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">
+                  {otherUser.name}
+                </span>
                 {otherUser.rating > 0 && (
                   <span className="ml-2">
                     <StarDisplay rating={otherUser.rating} />
@@ -105,16 +106,16 @@ export default function ExchangesPage() {
                   src={
                     item?.photos?.[0]?.url ? getMediaUrl(item.photos[0].url) : '/placeholder.png'
                   }
-                  className="w-10 h-10 rounded-lg object-cover bg-gray-100"
+                  className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
                 />
-                <span className="text-gray-400">⇄</span>
+                <span className="text-gray-400 dark:text-gray-500">⇄</span>
                 <img
                   src={
                     otherItem?.photos?.[0]?.url
                       ? getMediaUrl(otherItem.photos[0].url)
                       : '/placeholder.png'
                   }
-                  className="w-10 h-10 rounded-lg object-cover bg-gray-100"
+                  className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
                 />
               </div>
             </div>
@@ -126,84 +127,66 @@ export default function ExchangesPage() {
 
   if (loading)
     return (
-      <>
-        <Navbar />
-        <div className="p-8 text-center text-gray-500">{t('loading')}</div>
-      </>
+      <div className="flex justify-center py-16">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
+      </div>
     );
 
   return (
-    <>
-      <Navbar />
-      <div className="max-w-2xl mx-auto p-6">
-        {/* Back Link */}
-        <Link
-          href="/catalog"
-          className="inline-flex items-center text-gray-500 hover:text-gray-700 font-medium mb-6 transition-colors"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          {t('item_backToCatalog') || 'Назад к каталогу'}
-        </Link>
+    <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 backdrop-blur-md">
+      {/* Status Filter */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {STATUSES.map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              statusFilter === s
+                ? 'bg-teal-600 text-white shadow-sm'
+                : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
+            }`}
+          >
+            {statusLabel(s)}
+            {s !== 'ALL' && (
+              <span className="ml-1 opacity-70">
+                ({exchanges.filter((e) => e.status === s).length})
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t('exchanges_title')}</h1>
-
-        {/* Status Filter */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {STATUSES.map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                statusFilter === s
-                  ? 'bg-teal-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {statusLabel(s)}
-              {s !== 'ALL' && (
-                <span className="ml-1 opacity-70">
-                  ({exchanges.filter((e) => e.status === s).length})
-                </span>
-              )}
-            </button>
-          ))}
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+            {t('exchanges_incoming')}
+          </h2>
+          <div className="space-y-3">
+            {incoming.length === 0 ? (
+              <p className="text-sm text-gray-400 dark:text-gray-500 italic">
+                {t('exchanges_noIncoming')}
+              </p>
+            ) : (
+              incoming.map((e) => <ExchangeCard key={e.id} exchange={e} />)
+            )}
+          </div>
         </div>
 
-        <div className="space-y-8">
-          <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-              {t('exchanges_incoming')}
-            </h2>
-            <div className="space-y-3">
-              {incoming.length === 0 ? (
-                <p className="text-sm text-gray-400 italic">{t('exchanges_noIncoming')}</p>
-              ) : (
-                incoming.map((e) => <ExchangeCard key={e.id} exchange={e} />)
-              )}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-              {t('exchanges_outgoing')}
-            </h2>
-            <div className="space-y-3">
-              {outgoing.length === 0 ? (
-                <p className="text-sm text-gray-400 italic">{t('exchanges_noOutgoing')}</p>
-              ) : (
-                outgoing.map((e) => <ExchangeCard key={e.id} exchange={e} />)
-              )}
-            </div>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+            {t('exchanges_outgoing')}
+          </h2>
+          <div className="space-y-3">
+            {outgoing.length === 0 ? (
+              <p className="text-sm text-gray-400 dark:text-gray-500 italic">
+                {t('exchanges_noOutgoing')}
+              </p>
+            ) : (
+              outgoing.map((e) => <ExchangeCard key={e.id} exchange={e} />)
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

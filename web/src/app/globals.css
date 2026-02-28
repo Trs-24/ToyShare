@@ -1,5 +1,83 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-up: float-up 20s linear infinite;
+  --animate-gradient-x: gradient-x 15s ease infinite;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.8;
+    }
+
+    90% {
+      opacity: 0.8;
+    }
+
+    100% {
+      transform: translateY(-20vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes pulse-slow {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
+
 :root {
   --primary: #2fb39e;
   --primary-dark: #248a7a;
@@ -21,30 +99,37 @@ body {
     'Segoe UI',
     Roboto,
     sans-serif;
+
+  /* The global background is now handled by AnimatedBackground.tsx */
+  min-height: 100vh;
 }
 
 @layer components {
+
+  /* Premium Buttons */
   .btn-primary {
-    @apply bg-teal-500 hover:bg-teal-600 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98];
+    @apply relative overflow-hidden bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-md hover:shadow-teal-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 rounded-xl border border-gray-200 transition-all duration-200 hover:shadow-sm;
+    @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-semibold py-3 px-6 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 shadow-sm hover:shadow hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
 
   .btn-danger {
-    @apply bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200;
+    @apply bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-md hover:shadow-red-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
 
+  /* Glassmorphism Cards */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md;
+    @apply bg-white/80 dark:bg-slate-900/60 backdrop-blur-md rounded-3xl shadow-sm border border-white/60 dark:border-gray-700/50 overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-teal-500/5 hover:-translate-y-1;
   }
 
+  /* Form Elements */
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-100 outline-none transition-all duration-200 bg-white;
+    @apply w-full px-4 py-3 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-teal-400 dark:focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500;
   }
 
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide;
   }
 }
