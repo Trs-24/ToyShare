@@ -36,7 +36,8 @@ export default function Navbar() {
   const [notifLoading, setNotifLoading] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
-  const [isScrolled, setIsScrolled] = useState(false); // Added this state
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -343,11 +344,12 @@ export default function Navbar() {
                     {user.name || t('you')}
                   </span>
                   <div className="w-8 h-8 rounded-full bg-teal-100 border border-teal-200 overflow-hidden flex items-center justify-center text-teal-600 flex-shrink-0">
-                    {user.avatarUrl ? (
+                    {user.avatarUrl && !avatarError ? (
                       <img
                         src={getAvatarUrl(user.avatarUrl)!}
                         alt="Avatar"
                         className="w-full h-full object-cover"
+                        onError={() => setAvatarError(true)}
                       />
                     ) : (
                       <span className="font-bold text-xs">{user.name?.[0] || '👤'}</span>
