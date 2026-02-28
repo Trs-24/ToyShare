@@ -31,6 +31,15 @@ async function bootstrap(): Promise<NestExpressApplication> {
 }
 
 export default async (req: any, res: any) => {
-  await bootstrap();
-  expressApp(req, res);
+  try {
+    await bootstrap();
+    expressApp(req, res);
+  } catch (error) {
+    console.error('Error during Vercel bootstrap:', error);
+    res.status(500).json({
+      message: 'Internal Server Error during bootstrap',
+      error: error.message,
+      stack: error.stack,
+    });
+  }
 };
