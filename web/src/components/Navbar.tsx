@@ -452,7 +452,7 @@ function SearchInput() {
     } else {
       currentParams.delete('search');
     }
-    router.push(`/ catalog ? ${currentParams.toString()} `);
+    router.push(`/catalog?${currentParams.toString()}`);
   };
 
   return (
