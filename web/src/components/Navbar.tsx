@@ -17,13 +17,7 @@ const LANG_OPTIONS: { value: Locale; flag: string }[] = [
   { value: 'en', flag: '🇬🇧' },
 ];
 
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-}
+import type { Notification } from '@/lib/types';
 
 const Navbar = memo(function Navbar() {
   const { user, logout } = useAuth();

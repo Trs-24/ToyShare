@@ -2,10 +2,8 @@
 
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { api } from '@/lib/api';
-import { getMediaUrl } from '@/lib/utils';
 import { useTranslation } from '@/context/LanguageContext';
 import Navbar from '@/components/Navbar';
-import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   getCategoryOptions,
@@ -13,14 +11,18 @@ import {
   getTypeOptions,
   getConditionOptions,
   getGenderOptions,
-  getConditionLabel,
 } from '@/constants/itemOptions';
+import Spinner from '@/components/ui/Spinner';
+import EmptyState from '@/components/ui/EmptyState';
+import FilterSelect from '@/components/ui/FilterSelect';
+import ItemCard from '@/components/ItemCard';
+import type { Item } from '@/lib/types';
 
 const PER_PAGE_OPTIONS = [15, 30, 100];
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Spinner />}>
       <HomeContent />
     </Suspense>
   );
@@ -28,7 +30,7 @@ export default function HomePage() {
 
 function HomeContent() {
   const { t } = useTranslation();
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(15);
@@ -49,7 +51,6 @@ function HomeContent() {
     ownerName: searchParams.get('ownerName') || '',
   });
 
-  // Update filters when URL params change
   useEffect(() => {
     setFilters({
       search: searchParams.get('search') || '',
@@ -91,7 +92,7 @@ function HomeContent() {
 
   const handleLimitChange = (newLimit: number) => {
     setLimit(newLimit);
-    setPage(1); // Reset to first page on limit change
+    setPage(1);
   };
 
   const categoryOptions = getCategoryOptions(t);
@@ -100,7 +101,6 @@ function HomeContent() {
   const ageOptions = getAgeOptions(t);
   const typeOptions = getTypeOptions(t);
 
-  // Generate page numbers for pagination
   const getPageNumbers = () => {
     const pages: (number | '...')[] = [];
     if (totalPages <= 7) {
@@ -133,9 +133,7 @@ function HomeContent() {
             className="w-full md:w-64 space-y-5 flex-shrink-0 animate-fade-in-up"
             style={{ animationDelay: '100ms' }}
           >
-            {/* Search input removed from here, moved to Navbar */}
-
-            {/* City Filter */}
+            {/* City Filter (text input, not a select) */}
             <div className="pt-2">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 {t('catalog_city')}
@@ -149,103 +147,41 @@ function HomeContent() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('catalog_category')}
-              </label>
-              <select
-                className="input-field"
-                value={filters.category}
-                onChange={(e) => handleFilterChange('category', e.target.value)}
-              >
-                <option value="">{t('catalog_allCategories')}</option>
-                {categoryOptions
-                  .filter((o) => o.value)
-                  .map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('catalog_condition')}
-              </label>
-              <select
-                className="input-field"
-                value={filters.condition}
-                onChange={(e) => handleFilterChange('condition', e.target.value)}
-              >
-                <option value="">{t('catalog_anyCondition')}</option>
-                {conditionOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('catalog_gender')}
-              </label>
-              <select
-                className="input-field"
-                value={filters.gender}
-                onChange={(e) => handleFilterChange('gender', e.target.value)}
-              >
-                <option value="">{t('catalog_anyGender')}</option>
-                {genderOptions
-                  .filter((o) => o.value)
-                  .map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('catalog_age')}
-              </label>
-              <select
-                className="input-field"
-                value={filters.age}
-                onChange={(e) => handleFilterChange('age', e.target.value)}
-              >
-                <option value="">{t('catalog_anyAge')}</option>
-                {ageOptions
-                  .filter((o) => o.value)
-                  .map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                {t('catalog_type')}
-              </label>
-              <select
-                className="input-field"
-                value={filters.type}
-                onChange={(e) => handleFilterChange('type', e.target.value)}
-              >
-                <option value="">{t('catalog_anyType')}</option>
-                {typeOptions
-                  .filter((o) => o.value)
-                  .map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-              </select>
-            </div>
+            <FilterSelect
+              label={t('catalog_category')}
+              value={filters.category}
+              onChange={(v) => handleFilterChange('category', v)}
+              options={categoryOptions}
+              placeholder={t('catalog_allCategories')}
+            />
+            <FilterSelect
+              label={t('catalog_condition')}
+              value={filters.condition}
+              onChange={(v) => handleFilterChange('condition', v)}
+              options={conditionOptions}
+              placeholder={t('catalog_anyCondition')}
+            />
+            <FilterSelect
+              label={t('catalog_gender')}
+              value={filters.gender}
+              onChange={(v) => handleFilterChange('gender', v)}
+              options={genderOptions}
+              placeholder={t('catalog_anyGender')}
+            />
+            <FilterSelect
+              label={t('catalog_age')}
+              value={filters.age}
+              onChange={(v) => handleFilterChange('age', v)}
+              options={ageOptions}
+              placeholder={t('catalog_anyAge')}
+            />
+            <FilterSelect
+              label={t('catalog_type')}
+              value={filters.type}
+              onChange={(v) => handleFilterChange('type', v)}
+              options={typeOptions}
+              placeholder={t('catalog_anyType')}
+            />
 
             <button
               onClick={() => router.push('/catalog')}
@@ -266,7 +202,7 @@ function HomeContent() {
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-500">{t('catalog_perPage')}:</span>
-                  <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                     {PER_PAGE_OPTIONS.map((opt) => (
                       <button
                         key={opt}
@@ -286,69 +222,14 @@ function HomeContent() {
             )}
 
             {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-              </div>
+              <Spinner className="flex justify-center py-12" />
             ) : items.length === 0 ? (
-              <div className="text-center py-12 text-gray-400">
-                <p className="text-5xl mb-4">🔍</p>
-                <p>{t('catalog_nothingFound')}</p>
-              </div>
+              <EmptyState icon="🔍" message={t('catalog_nothingFound')} />
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {items.map((item) => (
-                    <Link
-                      key={item.id}
-                      href={`/items/${item.id}`}
-                      className="card group hover:shadow-lg transition"
-                    >
-                      <div className="aspect-square bg-gray-100 dark:bg-slate-800 relative overflow-hidden rounded-t-xl">
-                        {item.photos?.[0] ? (
-                          <img
-                            src={getMediaUrl(item.photos[0].url)}
-                            alt={item.title}
-                            loading="lazy"
-                            decoding="async"
-                            className={`w-full h-full object-cover group-hover:scale-105 transition duration-300 ${['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) ? 'opacity-60' : ''}`}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-4xl">
-                            🧸
-                          </div>
-                        )}
-                        <div className="absolute top-2 right-2 flex gap-1">
-                          {item.condition && (
-                            <span className="badge bg-white/90 text-gray-700 shadow-sm text-xs">
-                              {getConditionLabel(t, item.condition)}
-                            </span>
-                          )}
-                        </div>
-                        {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) && (
-                          <div className="absolute bottom-2 left-2 right-2">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600/90 text-white text-xs font-medium backdrop-blur-sm shadow">
-                              <span className="animate-pulse">✨</span> {t('catalog_inExchange')}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1">
-                            {item.title}
-                          </h3>
-                        </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-3">
-                          {item.description}
-                        </p>
-
-                        <div className="flex items-center justify-between mt-4 text-xs text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <span>📍 {item.owner?.city || t('catalog_noLocation')}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <ItemCard key={item.id} item={item} t={t} />
                   ))}
                 </div>
 

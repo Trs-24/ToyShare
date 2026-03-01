@@ -16,6 +16,8 @@ import {
 } from '@/constants/itemOptions';
 import { getMediaUrl } from '@/lib/utils';
 import { Item } from '@/lib/types';
+import Spinner from '@/components/ui/Spinner';
+import ItemCard from '@/components/ItemCard';
 
 export default function ItemDetailPage() {
   const params = useParams();
@@ -79,9 +81,7 @@ export default function ItemDetailPage() {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-        </div>
+        <Spinner />
       </>
     );
   }
@@ -124,11 +124,11 @@ export default function ItemDetailPage() {
           {t('item_backToCatalog')}
         </Link>
 
-        <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden mb-16">
+        <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden mb-16">
           <div className="flex flex-col lg:flex-row">
             {/* Left: Photos */}
-            <div className="lg:w-1/2 p-6 lg:p-10 border-r border-gray-50 bg-gray-50/30">
-              <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-white shadow-inner mb-6 relative group">
+            <div className="lg:w-1/2 p-6 lg:p-10 border-r border-gray-50 dark:border-gray-800 bg-gray-50/30 dark:bg-slate-800/30">
+              <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-inner mb-6 relative group">
                 {item.photos?.[selectedPhotoIndex] ? (
                   <img
                     src={getMediaUrl(item.photos[selectedPhotoIndex].url)}
@@ -197,79 +197,79 @@ export default function ItemDetailPage() {
               <div>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {item.condition && (
-                    <span className="px-4 py-1.5 rounded-full bg-white border border-gray-100 text-gray-700 text-xs font-bold shadow-sm uppercase tracking-wider">
+                    <span className="px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold shadow-sm uppercase tracking-wider">
                       {getConditionLabel(t, item.condition)}
                     </span>
                   )}
                   {item.category && (
-                    <span className="px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 text-xs font-bold uppercase tracking-wider">
+                    <span className="px-4 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs font-bold uppercase tracking-wider">
                       {getCategoryLabel(t, item.category)}
                     </span>
                   )}
                 </div>
 
-                <h1 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4 leading-tight">
+                <h1 className="text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4 leading-tight">
                   {item.title}
                 </h1>
-                <p className="text-lg text-gray-600 mb-8 leading-relaxed line-clamp-4">
+                <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed line-clamp-4">
                   {item.description}
                 </p>
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                  <div className="p-5 rounded-3xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-gray-700 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_age')}
                     </p>
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">
                       {item.age ? getAgeLabel(t, item.age) : t('notSpecified')}
                     </p>
                   </div>
-                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                  <div className="p-5 rounded-3xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-gray-700 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_gender')}
                     </p>
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">
                       {item.gender ? getGenderLabel(t, item.gender) : t('notSpecified')}
                     </p>
                   </div>
-                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                  <div className="p-5 rounded-3xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-gray-700 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_type')}
                     </p>
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">
                       {item.type ? getTypeLabel(t, item.type) : t('notSpecified')}
                     </p>
                   </div>
-                  <div className="p-5 rounded-3xl bg-gray-50 border border-gray-100 space-y-1">
+                  <div className="p-5 rounded-3xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-gray-700 space-y-1">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                       {t('item_added')}
                     </p>
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-lg font-bold text-gray-900 dark:text-white">
                       {new Date(item.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
 
                 {item.wishlist && (
-                  <div className="mb-10 p-6 rounded-[28px] bg-teal-50/50 border border-teal-100/50">
+                  <div className="mb-10 p-6 rounded-[28px] bg-teal-50/50 dark:bg-teal-900/20 border border-teal-100/50 dark:border-teal-800/50">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-xl">🔍</span>
-                      <h3 className="text-sm font-black text-teal-900 uppercase tracking-widest">
+                      <h3 className="text-sm font-black text-teal-900 dark:text-teal-200 uppercase tracking-widest">
                         {t('item_lookingFor')}
                       </h3>
                     </div>
-                    <p className="text-lg font-medium text-teal-900/80 leading-relaxed">
+                    <p className="text-lg font-medium text-teal-900/80 dark:text-teal-100/80 leading-relaxed">
                       {item.wishlist}
                     </p>
                   </div>
                 )}
               </div>
 
-              <div className="pt-8 border-t border-gray-100 space-y-8">
+              <div className="pt-8 border-t border-gray-100 dark:border-gray-800 space-y-8">
                 {item.owner && (
-                  <div className="flex items-center justify-between p-6 rounded-3xl bg-teal-50/50 border border-teal-100/50">
+                  <div className="flex items-center justify-between p-6 rounded-3xl bg-teal-50/50 dark:bg-teal-900/20 border border-teal-100/50 dark:border-teal-800/50">
                     <div className="flex items-center gap-5">
-                      <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-3xl shadow-sm border border-teal-100 overflow-hidden">
+                      <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-3xl shadow-sm border border-teal-100 dark:border-teal-800 overflow-hidden">
                         {item.owner.avatarUrl ? (
                           <img
                             src={getMediaUrl(item.owner.avatarUrl)}
@@ -283,8 +283,10 @@ export default function ItemDetailPage() {
                         )}
                       </div>
                       <div>
-                        <p className="text-xl font-bold text-gray-900">{item.owner.name}</p>
-                        <p className="text-gray-500 font-medium flex items-center gap-1.5 text-sm">
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">
+                          {item.owner.name}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1.5 text-sm">
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -397,73 +399,12 @@ export default function ItemDetailPage() {
         {/* Similar Suggestions */}
         {similarItems.length > 0 && (
           <div className="mb-20">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('item_similarItems')}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              {t('item_similarItems')}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {similarItems.map((similarItem) => (
-                <Link
-                  key={similarItem.id}
-                  href={`/items/${similarItem.id}`}
-                  className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 block"
-                >
-                  <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
-                    {similarItem.photos?.[0] ? (
-                      <img
-                        src={getMediaUrl(similarItem.photos[0].url)}
-                        alt={similarItem.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-4xl opacity-40 filter grayscale">
-                        🧸
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 flex gap-1">
-                      {similarItem.type && (
-                        <span className="px-2.5 py-1 rounded bg-teal-500/90 text-white shadow-sm text-[10px] font-bold uppercase tracking-wider">
-                          {getTypeLabel(t, similarItem.type)}
-                        </span>
-                      )}
-                    </div>
-                    <div className="absolute top-3 left-3 flex gap-1">
-                      {similarItem.condition && (
-                        <span className="px-2.5 py-1 rounded-lg bg-white/95 text-gray-700 shadow-sm text-[11px] font-semibold border border-gray-100">
-                          {getConditionLabel(t, similarItem.condition)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 line-clamp-1 mb-1.5">
-                      {similarItem.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <svg
-                          className="w-3.5 h-3.5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        {similarItem.owner?.city || t('catalog_noLocation')}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+                <ItemCard key={similarItem.id} item={similarItem} t={t} />
               ))}
             </div>
           </div>

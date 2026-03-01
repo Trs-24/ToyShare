@@ -4,13 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 
 import { useTranslation } from '@/context/LanguageContext';
-
-interface Stats {
-  totalUsers: number;
-  totalItems: number;
-  activeExchanges: number;
-  completedExchanges: number;
-}
+import type { AdminStats as Stats } from '@/lib/types';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();

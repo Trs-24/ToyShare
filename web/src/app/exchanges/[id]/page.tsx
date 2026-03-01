@@ -5,13 +5,15 @@ import { api } from '@/lib/api';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@/context/LanguageContext';
 import Navbar from '@/components/Navbar';
-import { getMediaUrl, getStatusColor } from '@/lib/utils';
+import { getMediaUrl } from '@/lib/utils';
 import { Exchange, User, Message } from '@/lib/types';
 import ExchangeChat from '@/components/exchanges/ExchangeChat';
 import ExchangeShipping from '@/components/exchanges/ExchangeShipping';
 import ExchangeRating from '@/components/exchanges/ExchangeRating';
 import ExchangeContact from '@/components/exchanges/ExchangeContact';
 import Link from 'next/link';
+import Spinner from '@/components/ui/Spinner';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 export default function ExchangeDetailPage() {
   const { id } = useParams();
@@ -63,7 +65,7 @@ export default function ExchangeDetailPage() {
   };
 
   const statusLabel = (status: string) => {
-    const key = `status_${status}` as any;
+    const key = `status_${status}` as Parameters<typeof t>[0];
     return t(key) || status;
   };
 
@@ -139,9 +141,7 @@ export default function ExchangeDetailPage() {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-        </div>
+        <Spinner />
       </>
     );
   if (!exchange)
@@ -181,68 +181,80 @@ export default function ExchangeDetailPage() {
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">{t('exDetail_title')}</h1>
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(exchange.status)}`}
-          >
-            {statusLabel(exchange.status)}
-          </span>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {t('exDetail_title')}
+          </h1>
+          <StatusBadge status={exchange.status} label={statusLabel(exchange.status)} />
         </div>
 
         {/* Items Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Their Item */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
               {isIncoming ? t('exDetail_theyOffer') : t('exDetail_youRequested')}
             </h2>
             <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden">
               {theirItem?.photos?.[0] ? (
                 <img
                   src={getMediaUrl(theirItem.photos[0].url)}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
+                  alt={theirItem?.title || ''}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-4xl">🧸</div>
               )}
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">{theirItem?.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">{theirItem?.description}</p>
-            <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+              {theirItem?.title}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+              {theirItem?.description}
+            </p>
+            <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
               <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold text-xs">
                 {otherUser?.name?.[0]}
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">{otherUser?.name}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {otherUser?.name}
+                </p>
                 <p className="text-xs text-gray-500">{t('exDetail_owner')}</p>
               </div>
             </div>
           </div>
 
           {/* My Item */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
               {isIncoming ? t('exDetail_yourItem') : t('exDetail_youOffered')}
             </h2>
             <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden">
               {myItem?.photos?.[0] ? (
                 <img
                   src={getMediaUrl(myItem.photos[0].url)}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
+                  alt={myItem?.title || ''}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-4xl">🧸</div>
               )}
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">{myItem?.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">{myItem?.description}</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+              {myItem?.title}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{myItem?.description}</p>
             {isIncoming && (
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-xs">
                   {t('you')}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{t('you')}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{t('you')}</p>
                   <p className="text-xs text-gray-500">{t('exDetail_owner')}</p>
                 </div>
               </div>

@@ -45,7 +45,7 @@ export default function AdminUsersPage() {
     if (!editingUser) return;
     setSaving(true);
     try {
-      await api.admin.updateUser(editingUser.id, editForm);
+      await api.admin.updateUser(editingUser.id, editForm as Partial<User>);
       setEditingUser(null);
       loadUsers();
     } catch (e) {

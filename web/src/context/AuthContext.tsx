@@ -2,20 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { api } from '@/lib/api';
+import type { User, RegisterPayload } from '@/lib/types';
 
 interface AuthContextType {
-  user: any;
+  user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: {
-    email: string;
-    password?: string;
-    name: string;
-    phone: string;
-    city?: string;
-    country?: string;
-    defaultPostOffice?: string;
-  }) => Promise<void>;
+  register: (data: RegisterPayload) => Promise<void>;
   loginWithToken: (token: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
@@ -24,7 +17,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,20 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('token', data.access_token);
     setToken(data.access_token);
 
-    // Fetch full profile immediately
     const profile = await api.users.getProfile();
     setUser(profile);
   };
 
-  const register = async (data: {
-    email: string;
-    password?: string;
-    name: string;
-    phone: string;
-    city?: string;
-    country?: string;
-    defaultPostOffice?: string;
-  }) => {
+  const register = async (data: RegisterPayload) => {
     await api.auth.register(data);
     if (data.password) {
       await login(data.email, data.password);
