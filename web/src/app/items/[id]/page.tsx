@@ -133,6 +133,8 @@ export default function ItemDetailPage() {
                   <img
                     src={getMediaUrl(item.photos[selectedPhotoIndex].url)}
                     alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-contain p-4"
                   />
                 ) : (
@@ -179,6 +181,8 @@ export default function ItemDetailPage() {
                     >
                       <img
                         src={getMediaUrl(photo.url)}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                         alt=""
                       />
@@ -269,7 +273,10 @@ export default function ItemDetailPage() {
                         {item.owner.avatarUrl ? (
                           <img
                             src={getMediaUrl(item.owner.avatarUrl)}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover"
+                            alt="Avatar"
                           />
                         ) : (
                           '👤'
@@ -403,6 +410,8 @@ export default function ItemDetailPage() {
                       <img
                         src={getMediaUrl(similarItem.photos[0].url)}
                         alt={similarItem.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />
                     ) : (
@@ -412,14 +421,14 @@ export default function ItemDetailPage() {
                     )}
                     <div className="absolute top-3 right-3 flex gap-1">
                       {similarItem.type && (
-                        <span className="px-2.5 py-1 rounded bg-teal-500/90 text-white shadow-sm text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                        <span className="px-2.5 py-1 rounded bg-teal-500/90 text-white shadow-sm text-[10px] font-bold uppercase tracking-wider">
                           {getTypeLabel(t, similarItem.type)}
                         </span>
                       )}
                     </div>
                     <div className="absolute top-3 left-3 flex gap-1">
                       {similarItem.condition && (
-                        <span className="px-2.5 py-1 rounded-lg bg-white/95 text-gray-700 shadow-sm text-[11px] font-semibold backdrop-blur border border-gray-100">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/95 text-gray-700 shadow-sm text-[11px] font-semibold border border-gray-100">
                           {getConditionLabel(t, similarItem.condition)}
                         </span>
                       )}

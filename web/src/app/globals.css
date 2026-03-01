@@ -112,7 +112,7 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-semibold py-3 px-6 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 shadow-sm hover:shadow hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
+    @apply bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-semibold py-3 px-6 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 shadow-sm hover:shadow hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
 
   .btn-danger {
@@ -121,12 +121,12 @@ body {
 
   /* Glassmorphism Cards */
   .card {
-    @apply bg-white/80 dark:bg-slate-900/60 backdrop-blur-md rounded-3xl shadow-sm border border-white/60 dark:border-gray-700/50 overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-teal-500/5 hover:-translate-y-1;
+    @apply bg-white/90 dark:bg-slate-900/80 rounded-3xl shadow-sm border border-white/60 dark:border-gray-700/50 overflow-hidden transition-shadow duration-300 hover:shadow-lg hover:shadow-teal-500/5;
   }
 
   /* Form Elements */
   .input-field {
-    @apply w-full px-4 py-3 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm focus:bg-white dark:focus:bg-slate-800 focus:border-teal-400 dark:focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-all duration-300 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500;
+    @apply w-full px-4 py-3 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-slate-800 focus:border-teal-400 dark:focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 outline-none transition-colors duration-200 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500;
   }
 
   .badge {

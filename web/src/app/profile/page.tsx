@@ -1,38 +1,28 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
-import Link from 'next/link';
 import { api } from '@/lib/api';
 import { getMediaUrl } from '@/lib/utils';
-import {
-  getCategoryOptions,
-  getAgeOptions,
-  getTypeOptions,
-  getConditionOptions,
-  getGenderOptions,
-  getConditionLabel,
-  getAgeLabel,
-  getTypeLabel,
-  getCategoryLabel,
-} from '@/constants/itemOptions';
+import ProfileTab from '@/components/profile/ProfileTab';
+import ItemsTab from '@/components/profile/ItemsTab';
 import ExchangesTab from '@/components/profile/ExchangesTab';
 
 type TabType = 'profile' | 'items' | 'exchanges';
 
+/**
+ * Suspense wrapper for CabinetPage (useSearchParams requires it).
+ */
 export default function CabinetPageWrapper() {
   return (
     <Suspense
       fallback={
-        <>
-          <Navbar />
-          <div className="flex justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-          </div>
-        </>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-500" />
+        </div>
       }
     >
       <CabinetPage />
@@ -40,6 +30,10 @@ export default function CabinetPageWrapper() {
   );
 }
 
+/**
+ * Profile / Cabinet page — slim orchestrator.
+ * Delegates content to ProfileTab, ItemsTab, and ExchangesTab.
+ */
 function CabinetPage() {
   const { user, isLoading: authLoading } = useAuth();
   const { t } = useTranslation();
@@ -50,35 +44,9 @@ function CabinetPage() {
   const tabParam = searchParams.get('tab') as TabType | null;
   const [activeTab, setActiveTab] = useState<TabType>(tabParam || 'profile');
 
-  // Profile state
+  // Profile data (shared between hero banner and ProfileTab)
   const [profile, setProfile] = useState<any>(null);
-  const [, setProfileLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileForm, setProfileForm] = useState({
-    name: '',
-    phone: '',
-    city: '',
-    country: '',
-    defaultPostOffice: '',
-    emailNotifications: true,
-  });
-
-  // Items state
   const [items, setItems] = useState<any[]>([]);
-  const [itemsLoading, setItemsLoading] = useState(true);
-  const [showItemForm, setShowItemForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [itemForm, setItemForm] = useState({
-    title: '',
-    description: '',
-    condition: 'GOOD',
-    category: '',
-    gender: '',
-    age: '',
-    type: '',
-    wishlist: '',
-    photos: [] as string[],
-  });
 
   // Sync tab from URL
   useEffect(() => {
@@ -86,85 +54,48 @@ function CabinetPage() {
     if (tab && ['profile', 'items', 'exchanges'].includes(tab)) {
       setActiveTab(tab);
     }
-    if (searchParams.get('action') === 'add' && tab === 'items') {
-      setShowItemForm(true);
-      setEditingId(null);
-      resetItemForm();
-    }
   }, [searchParams]);
 
   // Auth guard
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login');
-    }
+    if (!authLoading && !user) router.push('/login');
   }, [user, authLoading, router]);
 
-  // Load profile
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
-
-  // Load items immediately to display the correct count in the profile header on all tabs
-  useEffect(() => {
-    if (user) {
-      fetchItems();
-    }
-  }, [user]);
-
-  // No longer redirecting, Exchanges will render in the tab
-  useEffect(() => {
-    // Keep this effect empty if needed or remove it
-  }, [activeTab]);
-
-  const fetchProfile = async () => {
+  // Fetch profile
+  const fetchProfile = useCallback(async () => {
     try {
       const data = await api.users.getProfile();
       setProfile(data);
-      setProfileForm({
-        name: data.name || '',
-        phone: data.phone || '',
-        city: data.city || '',
-        country: data.country || '',
-        defaultPostOffice: data.defaultPostOffice || '',
-        emailNotifications: data.emailNotifications ?? true,
-      });
     } catch (err) {
       console.error(err);
-    } finally {
-      setProfileLoading(false);
     }
-  };
+  }, []);
 
-  const fetchItems = async () => {
+  // Fetch items (for the count in the hero banner)
+  const fetchItems = useCallback(async () => {
     if (!user) return;
     try {
       const data = await api.items.list({ ownerId: user.id });
       setItems(data.items);
     } catch (err) {
       console.error(err);
-    } finally {
-      setItemsLoading(false);
     }
-  };
+  }, [user]);
 
-  const handleProfileUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await api.users.updateProfile(profileForm);
-      setIsEditing(false);
+  useEffect(() => {
+    if (user) {
       fetchProfile();
-      alert(t('profile_updated'));
-    } catch (err) {
-      console.error(err);
-      alert(t('profile_updateError'));
+      fetchItems();
     }
+  }, [user, fetchProfile, fetchItems]);
+
+  const switchTab = (tab: TabType) => {
+    setActiveTab(tab);
+    router.replace(`/profile?tab=${tab}`, { scroll: false });
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       try {
         await api.users.uploadAvatar(e.target.files[0]);
         fetchProfile();
@@ -175,103 +106,15 @@ function CabinetPage() {
     }
   };
 
-  const resetItemForm = () => {
-    setItemForm({
-      title: '',
-      description: '',
-      condition: 'GOOD',
-      category: '',
-      gender: '',
-      age: '',
-      type: '',
-      wishlist: '',
-      photos: [],
-    });
-  };
-
-  const handleItemSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (editingId) {
-        const updated = await api.items.update(editingId, itemForm);
-        setItems(items.map((i) => (i.id === editingId ? updated : i)));
-        setEditingId(null);
-      } else {
-        const created = await api.items.create(itemForm);
-        setItems([created, ...items]);
-      }
-      setShowItemForm(false);
-      resetItemForm();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      try {
-        const { url } = await api.items.uploadPhoto(e.target.files[0]);
-        setItemForm((prev) => ({ ...prev, photos: [...prev.photos, url] }));
-      } catch (err) {
-        console.error(err);
-        alert(t('dash_photoError'));
-      }
-    }
-  };
-
-  const removePhoto = (index: number) => {
-    setItemForm((prev) => ({
-      ...prev,
-      photos: prev.photos.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleEditItem = (item: any) => {
-    setItemForm({
-      title: item.title,
-      description: item.description,
-      condition: item.condition,
-      category: item.category || '',
-      gender: item.gender || '',
-      age: item.age || '',
-      type: item.type || '',
-      wishlist: item.wishlist || '',
-      photos: item.photos?.map((p: any) => p.url) || [],
-    });
-    setEditingId(item.id);
-    setShowItemForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleDeleteItem = async (id: string) => {
-    if (!confirm(t('dash_deleteConfirm'))) return;
-    try {
-      await api.items.delete(id);
-      setItems(items.filter((i) => i.id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const switchTab = (tab: TabType) => {
-    setActiveTab(tab);
-    router.replace(`/profile?tab=${tab}`, { scroll: false });
-  };
-
-  const categoryOptions = getCategoryOptions(t);
-  const conditionOptions = getConditionOptions(t);
-  const genderOptions = getGenderOptions(t);
-  const ageOptions = getAgeOptions(t);
-  const typeOptions = getTypeOptions(t);
-
-  if (authLoading) return null;
-  if (!user) return null;
+  if (authLoading || !user) return null;
 
   const tabs: { key: TabType; label: string; icon: string }[] = [
     { key: 'profile', label: t('cabinet_tab_profile'), icon: '👤' },
     { key: 'items', label: t('cabinet_tab_items'), icon: '🧸' },
     { key: 'exchanges', label: t('cabinet_tab_exchanges'), icon: '⇄' },
   ];
+
+  const openFormFromUrl = searchParams.get('action') === 'add' && activeTab === 'items';
 
   return (
     <>
@@ -360,7 +203,7 @@ function CabinetPage() {
 
         {/* Tab Navigation */}
         <div
-          className="flex gap-2 bg-white/50 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl p-1.5 mb-8 border border-gray-100/50 dark:border-gray-800 shadow-sm animate-fade-in-up"
+          className="flex gap-2 bg-white/80 dark:bg-slate-900/80 rounded-2xl p-1.5 mb-8 border border-gray-100/50 dark:border-gray-800 shadow-sm animate-fade-in-up"
           style={{ animationDelay: '100ms' }}
         >
           {tabs.map((tab) => (
@@ -379,461 +222,11 @@ function CabinetPage() {
           ))}
         </div>
 
-        {/* === PROFILE TAB === */}
+        {/* Tab Content */}
         {activeTab === 'profile' && (
-          <div
-            className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-md rounded-3xl border border-white/60 dark:border-gray-800 shadow-md p-6 md:p-8 animate-fade-in-up"
-            style={{ animationDelay: '200ms' }}
-          >
-            {!isEditing ? (
-              <div className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                      {t('profile_name')}
-                    </label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      {profile?.name || t('notSpecified')}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                      {t('profile_email')}
-                    </label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      {profile?.email}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                      {t('profile_phone')}
-                    </label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      {profile?.phone || t('notSpecified')}
-                    </p>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                      {t('profile_city')}
-                    </label>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      {profile?.city || t('notSpecified')}
-                    </p>
-                  </div>
-                </div>
-                <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-                  <label className="flex items-center gap-3 cursor-default">
-                    <input
-                      type="checkbox"
-                      checked={!!profile?.emailNotifications}
-                      readOnly
-                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-teal-500 focus:ring-teal-500"
-                    />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {t('profile_emailNotifications')}
-                      </span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {t('profile_emailNotificationsDesc')}
-                      </p>
-                    </div>
-                  </label>
-                </div>
-                <button onClick={() => setIsEditing(true)} className="btn-primary mt-6">
-                  {t('profile_editBtn')}
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleProfileUpdate} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      {t('profile_name')}
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.name}
-                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                      className="input-field"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      {t('register_phone')}
-                    </label>
-                    <input
-                      type="tel"
-                      value={profileForm.phone}
-                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                      className="input-field"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      {t('register_city')}
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.city}
-                      onChange={(e) => setProfileForm({ ...profileForm, city: e.target.value })}
-                      className="input-field"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                      {t('register_defaultPostOffice')}
-                    </label>
-                    <input
-                      type="text"
-                      value={profileForm.defaultPostOffice}
-                      onChange={(e) =>
-                        setProfileForm({ ...profileForm, defaultPostOffice: e.target.value })
-                      }
-                      className="input-field"
-                    />
-                  </div>
-                </div>
-                <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={profileForm.emailNotifications}
-                      onChange={(e) =>
-                        setProfileForm({ ...profileForm, emailNotifications: e.target.checked })
-                      }
-                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-teal-500 focus:ring-teal-500"
-                    />
-                    <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {t('profile_emailNotifications')}
-                      </span>
-                      <p className="text-xs text-gray-500">{t('profile_emailNotificationsDesc')}</p>
-                    </div>
-                  </label>
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 transition-colors shadow-sm"
-                  >
-                    {t('profile_saveBtn')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="px-6 py-3 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    {t('profile_cancelBtn')}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+          <ProfileTab profile={profile} onProfileUpdated={fetchProfile} />
         )}
-
-        {/* === MY ITEMS TAB === */}
-        {activeTab === 'items' && (
-          <div>
-            {/* Add/Edit Item Form */}
-            {showItemForm && (
-              <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 mb-8 backdrop-blur-md">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                  {editingId ? t('dash_editItem') : t('nav_addItem')}
-                </h2>
-                <form onSubmit={handleItemSubmit} className="space-y-5">
-                  <input
-                    className="input-field"
-                    placeholder={t('dash_titlePlaceholder')}
-                    value={itemForm.title}
-                    onChange={(e) => setItemForm({ ...itemForm, title: e.target.value })}
-                    required
-                  />
-                  <textarea
-                    className="input-field"
-                    placeholder={t('dash_descPlaceholder')}
-                    rows={3}
-                    value={itemForm.description}
-                    onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
-                    required
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        {t('dash_conditionLabel')}
-                      </label>
-                      <select
-                        className="input-field"
-                        value={itemForm.condition}
-                        onChange={(e) => setItemForm({ ...itemForm, condition: e.target.value })}
-                      >
-                        {conditionOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        {t('dash_categoryLabel')}
-                      </label>
-                      <select
-                        className="input-field"
-                        value={itemForm.category}
-                        onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
-                      >
-                        {categoryOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        {t('dash_genderLabel')}
-                      </label>
-                      <select
-                        className="input-field"
-                        value={itemForm.gender}
-                        onChange={(e) => setItemForm({ ...itemForm, gender: e.target.value })}
-                      >
-                        {genderOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        {t('dash_ageLabel')}
-                      </label>
-                      <select
-                        className="input-field"
-                        value={itemForm.age}
-                        onChange={(e) => setItemForm({ ...itemForm, age: e.target.value })}
-                      >
-                        {ageOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                        {t('dash_typeLabel')}
-                      </label>
-                      <select
-                        className="input-field"
-                        value={itemForm.type}
-                        onChange={(e) => setItemForm({ ...itemForm, type: e.target.value })}
-                      >
-                        {typeOptions.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <input
-                    className="input-field"
-                    placeholder={t('dash_wishlistPlaceholder')}
-                    value={itemForm.wishlist}
-                    onChange={(e) => setItemForm({ ...itemForm, wishlist: e.target.value })}
-                  />
-                  {/* Photos */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      {t('dash_photos')}
-                    </label>
-                    <div className="flex flex-wrap gap-4">
-                      {itemForm.photos.map((url, index) => (
-                        <div
-                          key={index}
-                          className="relative w-24 h-24 rounded-xl overflow-hidden group"
-                        >
-                          <img
-                            src={getMediaUrl(url)}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removePhoto(index)}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      ))}
-                      <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:border-teal-500 dark:hover:border-teal-400 transition bg-white dark:bg-slate-800">
-                        <span className="text-2xl text-gray-400 dark:text-gray-500">+</span>
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={handlePhotoUpload}
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 transition-colors shadow-sm"
-                    >
-                      {editingId ? t('dash_saveBtn') : t('dash_publishBtn')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowItemForm(false);
-                        setEditingId(null);
-                        resetItemForm();
-                      }}
-                      className="px-6 py-3 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      {t('profile_cancelBtn')}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Add button */}
-            {!showItemForm && (
-              <div className="flex justify-end mb-6">
-                <button
-                  onClick={() => {
-                    setShowItemForm(true);
-                    setEditingId(null);
-                    resetItemForm();
-                  }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 transition-colors shadow-sm"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  {t('nav_addItem')}
-                </button>
-              </div>
-            )}
-
-            {/* Items Grid — catalog style */}
-            {itemsLoading ? (
-              <div className="flex justify-center py-16">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-              </div>
-            ) : items.length === 0 ? (
-              <div className="text-center py-16 text-gray-400 dark:text-gray-500">
-                <p className="text-5xl mb-4">📦</p>
-                <p className="text-lg">{t('dash_noItems')}</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow backdrop-blur-md"
-                  >
-                    {/* Photo */}
-                    <Link href={`/items/${item.id}`} className="block">
-                      <div className="aspect-[4/3] bg-gray-50 dark:bg-slate-800 relative overflow-hidden">
-                        {item.photos?.[0] ? (
-                          <img
-                            src={getMediaUrl(item.photos[0].url)}
-                            alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-4xl opacity-40">
-                            🧸
-                          </div>
-                        )}
-                        {/* Status badge */}
-                        <div className="absolute top-3 left-3">
-                          {['ACCEPTED', 'IN_PROGRESS'].includes(item.exchangeStatus) ? (
-                            <span className="px-2.5 py-1 rounded-lg bg-emerald-500/90 text-white text-[11px] font-bold">
-                              {t('dash_inExchange')}
-                            </span>
-                          ) : item.isAvailable ? (
-                            <span className="px-2.5 py-1 rounded-lg bg-green-500/90 text-white text-[11px] font-bold">
-                              {t('dash_available')}
-                            </span>
-                          ) : (
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-500/90 text-white text-[11px] font-bold">
-                              {t('dash_hidden')}
-                            </span>
-                          )}
-                        </div>
-                        {/* Type badge */}
-                        {item.type && (
-                          <div className="absolute top-3 right-3">
-                            <span className="px-2.5 py-1 rounded-lg bg-teal-500/90 text-white text-[11px] font-bold">
-                              {getTypeLabel(t, item.type)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-
-                    {/* Info */}
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 dark:text-gray-100 line-clamp-1 mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1 mb-3">
-                        {item.description}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-[11px] font-medium border border-transparent dark:border-gray-700">
-                          {getConditionLabel(t, item.condition)}
-                        </span>
-                        {item.category && (
-                          <span className="px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[11px] font-medium border border-transparent dark:border-teal-800">
-                            {getCategoryLabel(t, item.category)}
-                          </span>
-                        )}
-                        {item.age && (
-                          <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-[11px] font-medium border border-transparent dark:border-amber-800">
-                            {getAgeLabel(t, item.age)}
-                          </span>
-                        )}
-                      </div>
-                      {/* Action buttons */}
-                      <div className="flex gap-2 pt-3 border-t border-gray-100 dark:border-gray-800">
-                        <button
-                          onClick={() => handleEditItem(item)}
-                          className="flex-1 px-3 py-2 text-sm font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20 rounded-xl hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-transparent dark:border-teal-800/50"
-                        >
-                          {t('dash_editItem')}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteItem(item.id)}
-                          className="flex-1 px-3 py-2 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors border border-transparent dark:border-red-800/50"
-                        >
-                          {t('dash_deleteItem')}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* === EXCHANGES TAB === */}
+        {activeTab === 'items' && <ItemsTab initialItems={items} openForm={openFormFromUrl} />}
         {activeTab === 'exchanges' && <ExchangesTab />}
       </main>
     </>

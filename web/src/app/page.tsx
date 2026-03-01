@@ -174,7 +174,7 @@ export default function LandingPage() {
               ].map((step, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white/60 dark:bg-slate-900/40 backdrop-blur-md p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow,border-color,background-color] duration-300 relative overflow-hidden group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white/90 dark:bg-slate-900/80 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow duration-300 relative overflow-hidden group`}
                 >
                   <div className="absolute inset-0 bg-teal-50/0 dark:bg-teal-900/0 group-hover:bg-teal-50/40 dark:group-hover:bg-teal-900/40 transition-colors duration-300 rounded-3xl" />
                   <div className="relative z-10">
@@ -240,7 +240,7 @@ export default function LandingPage() {
               ].map((reason, i) => (
                 <div
                   key={i}
-                  className={`reveal reveal-up delay-${i * 100} bg-white/60 dark:bg-slate-900/40 backdrop-blur-md p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex gap-6 items-start hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow,border-color,background-color] duration-300 cursor-default group`}
+                  className={`reveal reveal-up delay-${i * 100} bg-white/90 dark:bg-slate-900/80 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex gap-6 items-start hover:shadow-lg transition-shadow duration-300 cursor-default group`}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-900/30 flex-shrink-0 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
                     {reason.icon}

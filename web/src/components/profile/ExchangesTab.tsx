@@ -71,7 +71,7 @@ export default function ExchangesTab() {
 
     return (
       <Link href={`/exchanges/${exchange.id}`} className="block">
-        <div className="bg-white dark:bg-slate-900/60 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow backdrop-blur-md">
+        <div className="bg-white dark:bg-slate-900/80 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-2">
               <span
@@ -106,6 +106,8 @@ export default function ExchangesTab() {
                   src={
                     item?.photos?.[0]?.url ? getMediaUrl(item.photos[0].url) : '/placeholder.png'
                   }
+                  loading="lazy"
+                  decoding="async"
                   className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
                 />
                 <span className="text-gray-400 dark:text-gray-500">⇄</span>
@@ -115,6 +117,8 @@ export default function ExchangesTab() {
                       ? getMediaUrl(otherItem.photos[0].url)
                       : '/placeholder.png'
                   }
+                  loading="lazy"
+                  decoding="async"
                   className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
                 />
               </div>
@@ -133,7 +137,7 @@ export default function ExchangesTab() {
     );
 
   return (
-    <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 backdrop-blur-md">
+    <div className="bg-white dark:bg-slate-900/80 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8">
       {/* Status Filter */}
       <div className="flex flex-wrap gap-2 mb-8">
         {STATUSES.map((s) => (

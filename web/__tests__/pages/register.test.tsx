@@ -93,7 +93,7 @@ describe('RegisterPage', () => {
         defaultPostOffice: undefined,
         password: 'password123',
       });
-      expect(mockRouterPush).toHaveBeenCalledWith('/dashboard');
+      expect(mockRouterPush).toHaveBeenCalledWith('/profile');
     });
   });
 

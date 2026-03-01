@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 
-export function ThemeToggle() {
+export const ThemeToggle = React.memo(function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   // Ensure hydration completion before rendering toggle to avoid mismatch
   const [mounted, setMounted] = React.useState(false);
@@ -56,4 +56,4 @@ export function ThemeToggle() {
       </svg>
     </button>
   );
-}
+});

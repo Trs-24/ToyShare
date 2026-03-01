@@ -12,6 +12,10 @@ const ru: Record<TranslationKeys, string> = {
   error: 'Ошибка',
   notSpecified: 'Не указано',
   you: 'Вы',
+  time_justNow: 'только что',
+  time_min: 'мин',
+  time_hour: 'ч',
+  time_day: 'дн',
 
   // === Navbar ===
   nav_home: 'Главная',

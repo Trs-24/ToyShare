@@ -12,6 +12,10 @@ const en: Record<TranslationKeys, string> = {
   error: 'Error',
   notSpecified: 'Not specified',
   you: 'You',
+  time_justNow: 'just now',
+  time_min: 'min',
+  time_hour: 'hr',
+  time_day: 'days',
 
   // === Navbar ===
   nav_home: 'Home',

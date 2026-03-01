@@ -10,6 +10,10 @@ const uk = {
   error: 'Помилка',
   notSpecified: 'Не вказано',
   you: 'Ви',
+  time_justNow: 'щойно',
+  time_min: 'хв',
+  time_hour: 'год',
+  time_day: 'дн',
 
   // === Navbar ===
   nav_home: 'Головна',

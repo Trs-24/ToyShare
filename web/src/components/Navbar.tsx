@@ -6,9 +6,10 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { getMediaUrl } from '@/lib/utils';
 import type { Locale } from '@/i18n';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { api } from '@/lib/api';
-import { ThemeToggle } from '@/components/ThemeToggle'; // Added this import
+import SearchInput from '@/components/SearchInput';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const LANG_OPTIONS: { value: Locale; flag: string }[] = [
   { value: 'uk', flag: '🇺🇦' },
@@ -24,7 +25,7 @@ interface Notification {
   createdAt: string;
 }
 
-export default function Navbar() {
+const Navbar = memo(function Navbar() {
   const { user, logout } = useAuth();
   const { t, locale, setLocale } = useTranslation();
   const router = useRouter();
@@ -76,10 +77,11 @@ export default function Navbar() {
   }, [user]);
 
   useEffect(() => {
+    if (!user) return;
     fetchUnreadCount();
     const interval = setInterval(fetchUnreadCount, 30000);
     return () => clearInterval(interval);
-  }, [fetchUnreadCount]);
+  }, [fetchUnreadCount, user]);
 
   // Load notifications when dropdown opens
   const openNotifications = async () => {
@@ -132,12 +134,12 @@ export default function Navbar() {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'щойно';
-    if (mins < 60) return `${mins} хв`;
+    if (mins < 1) return t('time_justNow');
+    if (mins < 60) return `${mins} ${t('time_min')}`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} год`;
+    if (hours < 24) return `${hours} ${t('time_hour')}`;
     const days = Math.floor(hours / 24);
-    return `${days} дн`;
+    return `${days} ${t('time_day')}`;
   };
 
   return (
@@ -151,14 +153,8 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6 flex-1 max-w-2xl mr-4">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-2 bg-teal-50 dark:bg-teal-900/30 rounded-xl group-hover:bg-teal-100 dark:group-hover:bg-teal-800/50 transition-colors">
-              <svg
-                className="w-6 h-6 text-teal-600 dark:text-teal-400"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
-              </svg>
+            <div className="p-1.5 bg-teal-50 dark:bg-teal-900/30 rounded-xl group-hover:bg-teal-100 dark:group-hover:bg-teal-800/50 transition-colors">
+              <img src="/logo.svg" alt="ToyShare" className="w-8 h-8" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-400 dark:to-emerald-400 bg-clip-text text-transparent">
               ToyShare
@@ -208,11 +204,11 @@ export default function Navbar() {
               <button
                 key={lang.value}
                 onClick={() => setLocale(lang.value)}
-                className={`px - 2 py - 1 text - sm rounded - md transition - all ${
+                className={`px-2 py-1 text-sm rounded-md transition-all ${
                   locale === lang.value
                     ? 'bg-white dark:bg-gray-700 shadow-sm font-medium dark:text-white'
                     : 'hover:bg-gray-200/50 dark:hover:bg-gray-700/50 text-gray-500 dark:text-gray-400'
-                } `}
+                }`}
                 title={lang.value.toUpperCase()}
               >
                 {lang.flag}
@@ -242,7 +238,7 @@ export default function Navbar() {
               <div className="relative" ref={notifRef}>
                 <button
                   onClick={openNotifications}
-                  className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:rotate-12"
+                  className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:rotate-12"
                   title={t('notif_title')}
                 >
                   <svg
@@ -253,7 +249,7 @@ export default function Navbar() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-5 h-5 text-gray-600"
+                    className="w-5 h-5 text-gray-600 dark:text-gray-300"
                   >
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -267,9 +263,11 @@ export default function Navbar() {
 
                 {/* Notifications Dropdown */}
                 {isNotifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                    <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-gray-900">{t('notif_title')}</h3>
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {t('notif_title')}
+                      </h3>
                       {unreadCount > 0 && (
                         <button
                           onClick={markAllRead}
@@ -280,13 +278,13 @@ export default function Navbar() {
                       )}
                     </div>
 
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700">
                       {notifLoading ? (
-                        <div className="px-4 py-8 text-center text-gray-400 text-sm">
+                        <div className="px-4 py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
                           {t('loading')}
                         </div>
                       ) : notifications.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-gray-400 text-sm">
+                        <div className="px-4 py-8 text-center text-gray-400 dark:text-gray-500 text-sm">
                           <span className="text-2xl block mb-2">🔔</span>
                           {t('notif_empty')}
                         </div>
@@ -299,26 +297,26 @@ export default function Navbar() {
                               setIsNotifOpen(false);
                               router.push('/profile?tab=exchanges');
                             }}
-                            className={`w - full text - left px - 4 py - 3 border - b border - gray - 50 hover: bg - gray - 50 transition - colors ${
-                              !notif.isRead ? 'bg-teal-50/50' : ''
-                            } `}
+                            className={`w-full text-left px-4 py-3 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors ${
+                              !notif.isRead ? 'bg-teal-50/50 dark:bg-teal-900/20' : ''
+                            }`}
                           >
                             <div className="flex items-start gap-3">
                               <div
-                                className={`mt - 1 w - 2 h - 2 rounded - full flex - shrink - 0 ${
+                                className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
                                   !notif.isRead ? 'bg-teal-500' : 'bg-transparent'
-                                } `}
+                                }`}
                               />
                               <div className="flex-1 min-w-0">
                                 <p
-                                  className={`text - sm ${!notif.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'} `}
+                                  className={`text-sm ${!notif.isRead ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}`}
                                 >
                                   {notif.title}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
                                   {notif.message}
                                 </p>
-                                <p className="text-[10px] text-gray-400 mt-1">
+                                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
                                   {formatTime(notif.createdAt)}
                                 </p>
                               </div>
@@ -338,9 +336,9 @@ export default function Navbar() {
                     setIsMenuOpen(!isMenuOpen);
                     setIsNotifOpen(false);
                   }}
-                  className="flex items-center gap-2 hover:bg-gray-50 rounded-full pl-2 pr-1 py-1 transition-colors border border-transparent hover:border-gray-100"
+                  className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full pl-2 pr-1 py-1 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-gray-700"
                 >
-                  <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate hidden sm:block">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate hidden sm:block">
                     {user.name || t('you')}
                   </span>
                   <div className="w-8 h-8 rounded-full bg-teal-100 border border-teal-200 overflow-hidden flex items-center justify-center text-teal-600 flex-shrink-0">
@@ -359,12 +357,14 @@ export default function Navbar() {
 
                 {/* Simplified Dropdown — only Logout + Admin */}
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-3 border-b border-gray-50">
-                      <p className="text-sm font-semibold text-gray-900 truncate">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-4 py-3 border-b border-gray-50 dark:border-gray-700">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
                         {user.name || t('notSpecified')}
                       </p>
-                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {user.email}
+                      </p>
                     </div>
 
                     <div className="py-1">
@@ -372,14 +372,14 @@ export default function Navbar() {
                       <Link
                         href="/profile"
                         onClick={handleLinkClick}
-                        className="md:hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                        className="md:hidden px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2"
                       >
                         <span>👤</span> {t('nav_cabinet')}
                       </Link>
                       <Link
                         href="/profile?tab=items&action=add"
                         onClick={handleLinkClick}
-                        className="sm:hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                        className="sm:hidden px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2"
                       >
                         <span>➕</span> {t('nav_addItem')}
                       </Link>
@@ -387,21 +387,21 @@ export default function Navbar() {
                         <Link
                           href="/admin"
                           onClick={handleLinkClick}
-                          className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-teal-600 transition-colors flex items-center gap-2"
+                          className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2"
                         >
                           <span>⚙️</span> Адмінка
                         </Link>
                       )}
                     </div>
 
-                    <div className="border-t border-gray-50 py-1">
+                    <div className="border-t border-gray-50 dark:border-gray-700 py-1">
                       <button
                         onClick={() => {
                           logout();
                           setIsMenuOpen(false);
                           router.push('/');
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
                       >
                         <span>🚪</span> {t('nav_logout')}
                       </button>
@@ -414,7 +414,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-gray-100"
+                className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 px-4 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 {t('nav_login')}
               </Link>
@@ -430,70 +430,6 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+});
 
-function SearchInput() {
-  const router = useRouter();
-  const { t } = useTranslation();
-  const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      setSearchTerm(params.get('search') || '');
-    }
-  }, []);
-
-  const handleSearch = () => {
-    if (typeof window === 'undefined') return;
-    const currentParams = new URLSearchParams(window.location.search);
-    if (searchTerm) {
-      currentParams.set('search', searchTerm);
-    } else {
-      currentParams.delete('search');
-    }
-    router.push(`/catalog?${currentParams.toString()}`);
-  };
-
-  return (
-    <>
-      <input
-        type="text"
-        placeholder={t('catalog_searchPlaceholder') || 'Search...'}
-        className="w-full pl-10 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') handleSearch();
-        }}
-      />
-      <svg
-        className="w-4 h-4 text-gray-400 absolute left-3.5 top-2.5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-      <button
-        onClick={handleSearch}
-        className="absolute right-2 top-1 p-1.5 rounded-full text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-colors"
-        aria-label="Search"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
-      </button>
-    </>
-  );
-}
+export default Navbar;
