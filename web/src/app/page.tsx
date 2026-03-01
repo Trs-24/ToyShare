@@ -42,13 +42,6 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 relative overflow-hidden">
-          {/* Ambient glow — lightweight colored circles */}
-          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-teal-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow pointer-events-none" />
-          <div
-            className="absolute top-40 -right-40 w-[600px] h-[600px] bg-emerald-300/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow pointer-events-none"
-            style={{ animationDelay: '2s' }}
-          />
-
           <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
             <div className="max-w-xl">
               <div className="reveal reveal-up inline-flex items-center gap-2 px-4 py-2 rounded-full border border-teal-100 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm font-medium mb-6 shadow-sm shadow-teal-100/50">
@@ -336,7 +329,6 @@ export default function LandingPage() {
         }
         .animate-float {
           animation: float 5s ease-in-out infinite;
-          will-change: transform;
         }
       `}</style>
     </div>

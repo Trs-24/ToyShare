@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
 import { useTranslation } from '@/context/LanguageContext';
-import { getMediaUrl, getStatusColor, getDateLocale } from '@/lib/utils';
-import { Exchange } from '@/lib/types';
+import type { Exchange } from '@/lib/types';
+import { getStatusColor, getDateLocale } from '@/lib/utils';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 const STATUSES = [
   'ALL',
@@ -102,25 +103,25 @@ export default function ExchangesTab() {
                 )}
               </p>
               <div className="flex items-center gap-2 mt-2">
-                <img
-                  src={
-                    item?.photos?.[0]?.url ? getMediaUrl(item.photos[0].url) : '/placeholder.png'
-                  }
-                  loading="lazy"
-                  decoding="async"
-                  className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
-                />
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 relative">
+                  <OptimizedImage
+                    src={item?.photos?.[0]?.url || ''}
+                    alt=""
+                    className="object-cover"
+                    sizes="40px"
+                    fallback="🧸"
+                  />
+                </div>
                 <span className="text-gray-400 dark:text-gray-500">⇄</span>
-                <img
-                  src={
-                    otherItem?.photos?.[0]?.url
-                      ? getMediaUrl(otherItem.photos[0].url)
-                      : '/placeholder.png'
-                  }
-                  loading="lazy"
-                  decoding="async"
-                  className="w-10 h-10 rounded-lg object-cover bg-gray-100 dark:bg-slate-800"
-                />
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 relative">
+                  <OptimizedImage
+                    src={otherItem?.photos?.[0]?.url || ''}
+                    alt=""
+                    className="object-cover"
+                    sizes="40px"
+                    fallback="🧸"
+                  />
+                </div>
               </div>
             </div>
           </div>

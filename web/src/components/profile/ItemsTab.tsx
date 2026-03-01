@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
-import { getMediaUrl } from '@/lib/utils';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import {
   getConditionLabel,
   getCategoryLabel,
@@ -163,12 +163,11 @@ export default function ItemsTab({ initialItems, openForm = false }: ItemsTabPro
               <Link href={`/items/${item.id}`} className="block">
                 <div className="aspect-[4/3] bg-gray-50 dark:bg-slate-800 relative overflow-hidden">
                   {item.photos?.[0] ? (
-                    <img
-                      src={getMediaUrl(item.photos[0].url)}
+                    <OptimizedImage
+                      src={item.photos[0].url}
                       alt={item.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      className="object-cover group-hover:scale-105 transition duration-500"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-40">

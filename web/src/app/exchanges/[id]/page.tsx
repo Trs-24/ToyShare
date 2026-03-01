@@ -5,7 +5,6 @@ import { api } from '@/lib/api';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@/context/LanguageContext';
 import Navbar from '@/components/Navbar';
-import { getMediaUrl } from '@/lib/utils';
 import { Exchange, User, Message } from '@/lib/types';
 import ExchangeChat from '@/components/exchanges/ExchangeChat';
 import ExchangeShipping from '@/components/exchanges/ExchangeShipping';
@@ -14,6 +13,7 @@ import ExchangeContact from '@/components/exchanges/ExchangeContact';
 import Link from 'next/link';
 import Spinner from '@/components/ui/Spinner';
 import StatusBadge from '@/components/ui/StatusBadge';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 export default function ExchangeDetailPage() {
   const { id } = useParams();
@@ -196,12 +196,11 @@ export default function ExchangeDetailPage() {
             </h2>
             <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden">
               {theirItem?.photos?.[0] ? (
-                <img
-                  src={getMediaUrl(theirItem.photos[0].url)}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
+                <OptimizedImage
+                  src={theirItem.photos[0].url}
                   alt={theirItem?.title || ''}
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-4xl">🧸</div>
@@ -233,12 +232,11 @@ export default function ExchangeDetailPage() {
             </h2>
             <div className="aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden">
               {myItem?.photos?.[0] ? (
-                <img
-                  src={getMediaUrl(myItem.photos[0].url)}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
+                <OptimizedImage
+                  src={myItem.photos[0].url}
                   alt={myItem?.title || ''}
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-4xl">🧸</div>

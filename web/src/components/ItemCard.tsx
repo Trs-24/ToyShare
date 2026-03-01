@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import Link from 'next/link';
-import { getMediaUrl } from '@/lib/utils';
 import {
   getConditionLabel,
   getCategoryLabel,
   getAgeLabel,
   getTypeLabel,
 } from '@/constants/itemOptions';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import type { Item } from '@/lib/types';
 import type { TranslationKeys } from '@/i18n';
 
@@ -34,12 +34,11 @@ const ItemCard = memo(function ItemCard({ item, t, className = '' }: ItemCardPro
       {/* Photo */}
       <div className="aspect-square bg-gray-100 dark:bg-slate-800 relative overflow-hidden rounded-t-xl">
         {item.photos?.[0] ? (
-          <img
-            src={getMediaUrl(item.photos[0].url)}
+          <OptimizedImage
+            src={item.photos[0].url}
             alt={item.title}
-            loading="lazy"
-            decoding="async"
-            className={`w-full h-full object-cover group-hover:scale-105 transition duration-300 ${isInExchange ? 'opacity-60' : ''}`}
+            className={`object-cover group-hover:scale-105 transition duration-300 ${isInExchange ? 'opacity-60' : ''}`}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-4xl">🧸</div>

@@ -14,10 +14,10 @@ import {
   getTypeLabel,
   getCategoryLabel,
 } from '@/constants/itemOptions';
-import { getMediaUrl } from '@/lib/utils';
 import { Item } from '@/lib/types';
 import Spinner from '@/components/ui/Spinner';
 import ItemCard from '@/components/ItemCard';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 export default function ItemDetailPage() {
   const params = useParams();
@@ -130,12 +130,12 @@ export default function ItemDetailPage() {
             <div className="lg:w-1/2 p-6 lg:p-10 border-r border-gray-50 dark:border-gray-800 bg-gray-50/30 dark:bg-slate-800/30">
               <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-white dark:bg-slate-800 shadow-inner mb-6 relative group">
                 {item.photos?.[selectedPhotoIndex] ? (
-                  <img
-                    src={getMediaUrl(item.photos[selectedPhotoIndex].url)}
+                  <OptimizedImage
+                    src={item.photos[selectedPhotoIndex].url}
                     alt={item.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-contain p-4"
+                    priority
+                    className="object-contain p-4"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-6xl opacity-20 filter grayscale">
@@ -179,12 +179,11 @@ export default function ItemDetailPage() {
                           : 'border-transparent opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img
-                        src={getMediaUrl(photo.url)}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover"
+                      <OptimizedImage
+                        src={photo.url}
                         alt=""
+                        className="object-cover"
+                        sizes="80px"
                       />
                     </button>
                   ))}
@@ -271,12 +270,11 @@ export default function ItemDetailPage() {
                     <div className="flex items-center gap-5">
                       <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center text-3xl shadow-sm border border-teal-100 dark:border-teal-800 overflow-hidden">
                         {item.owner.avatarUrl ? (
-                          <img
-                            src={getMediaUrl(item.owner.avatarUrl)}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-full h-full object-cover"
+                          <OptimizedImage
+                            src={item.owner.avatarUrl}
                             alt="Avatar"
+                            className="object-cover"
+                            sizes="64px"
                           />
                         ) : (
                           '👤'

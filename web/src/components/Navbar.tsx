@@ -50,12 +50,19 @@ const Navbar = memo(function Navbar() {
     };
   }, []);
 
-  // Navbar scroll effect
+  // Navbar scroll effect — only re-render when crossing the threshold
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrolled = window.scrollY > 10;
+        setIsScrolled((prev) => (prev === scrolled ? prev : scrolled));
+        ticking = false;
+      });
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
