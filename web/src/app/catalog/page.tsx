@@ -121,7 +121,7 @@ function HomeContent() {
     <>
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 animate-fade-in-up">
+        <h1 className="text-3xl font-bold mb-8">
           {filters.ownerName
             ? t('catalog_userItems').replace('{name}', filters.ownerName)
             : t('catalog_title')}
@@ -130,7 +130,7 @@ function HomeContent() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
           <aside
-            className="w-full md:w-64 space-y-5 flex-shrink-0 animate-fade-in-up"
+            className="w-full md:w-64 space-y-5 flex-shrink-0"
             style={{ animationDelay: '100ms' }}
           >
             {/* City Filter (text input, not a select) */}
@@ -192,7 +192,7 @@ function HomeContent() {
           </aside>
 
           {/* Items Grid */}
-          <div className="flex-1 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+          <div className="flex-1" style={{ animationDelay: '200ms' }}>
             {/* Top bar: total count + per-page selector */}
             {!loading && items.length > 0 && (
               <div className="flex items-center justify-between mb-6">

@@ -203,7 +203,7 @@ function CabinetPage() {
 
         {/* Tab Navigation */}
         <div
-          className="flex gap-2 bg-white/80 dark:bg-slate-900/80 rounded-2xl p-1.5 mb-8 border border-gray-100/50 dark:border-gray-800 shadow-sm animate-fade-in-up"
+          className="flex gap-2 bg-white/80 dark:bg-slate-900/80 rounded-2xl p-1.5 mb-8 border border-gray-100/50 dark:border-gray-800 shadow-sm"
           style={{ animationDelay: '100ms' }}
         >
           {tabs.map((tab) => (

@@ -50,7 +50,7 @@ export default function ProfileTab({ profile, onProfileUpdated }: ProfileTabProp
 
   return (
     <div
-      className="bg-white/90 dark:bg-slate-900/80 rounded-3xl border border-white/60 dark:border-gray-800 shadow-md p-6 md:p-8 animate-fade-in-up"
+      className="bg-white/90 dark:bg-slate-900/80 rounded-3xl border border-white/60 dark:border-gray-800 shadow-md p-6 md:p-8"
       style={{ animationDelay: '200ms' }}
     >
       {!isEditing ? (
